@@ -2,7 +2,7 @@ import csv
 from numpy import random
 from .FrequencyTable import FrequencyTable
 
-class Pawns:
+class Pawns():
     def __init__(self):
         self.letters = []
     
@@ -46,8 +46,8 @@ class Pawns:
         Createss the bag of pawns from csv file.
         
         Args:
-           csv_path (str): Path to the csv file containing pawn data
-          
+            csv_path (str): Path to the csv file containing pawn data
+
         Raises:
             FileNotFoundError: Error to open csv file failed.
             ValueError: CSV file format is Incorrect.
@@ -104,6 +104,26 @@ class Pawns:
             ValueError: If the letters list is empty.
         """
         random_pawn = random.choice(self.letters)
-        self.letters.remove(random_pawn)
+        self.takePawn(random_pawn)
         
         return random_pawn
+
+    def takePawn(self, character):
+        """
+        Take a Pawns in player's pawns bag
+        
+        Args:
+            character (str): character for remove the pawns bag
+        """
+        
+        self.letters.remove(character)
+    
+    def getTotalPawns(self):
+        """
+        returns the total of pawns
+        
+        returns:
+            int: Total of pawns
+        """
+        
+        return len(self.letters)

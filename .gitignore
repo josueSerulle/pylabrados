@@ -1,0 +1,12 @@
+# Ignore unnecessary files and folders
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore virtual environments
+venv/
+.env/
+
+# Ignore specific environment configuration files
+.idea/
+.vscode/

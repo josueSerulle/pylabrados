@@ -21,7 +21,7 @@ class Word():
             return self.word == w.word
         
         raise TypeError("the parameter must be an object of the word class")
-        
+    
     def isEmpty(self):
         """
         returns True if empty
@@ -45,7 +45,17 @@ class Word():
             frequencyTable.update(word)
         
         return frequencyTable
+    
+    def getLengthWord(self):
+        """
+        returns the length of word
         
+        returns:
+            int: length of word
+        """
+        
+        return len(self.word)
+
     @classmethod
     def readWord(cls):
         input_word = input("Introduce una palabra: ").strip().upper()
@@ -68,7 +78,7 @@ class Word():
         
         w = Word()
         file_word = file.readline()
-  
+
         for c in file_word[:-1]:
             w.word.append(c)
         return w

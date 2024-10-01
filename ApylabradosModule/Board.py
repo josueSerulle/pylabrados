@@ -26,11 +26,11 @@ class Board:
         """
         Put the word in the board, removing used pawn form the player's bag
         Args:
-          player_pawns (Pawns): player's pawns bag
-          word (Word): create word
-          x (int): coordinates on the x axis
-          y (int): coordinate on the y axis
-          direction (str): "V" if the word is on the y axis or "H" if the word is on the x axis
+            player_pawns (Pawns): player's pawns bag
+            word (Word): create word
+            x (int): coordinates on the x axis
+            y (int): coordinate on the y axis
+            direction (str): "V" if the word is on the y axis or "H" if the word is on the x axis
         """
 
         for letter in word.word:
@@ -51,18 +51,38 @@ class Board:
         Is possible put the word on board
 
         Args:
-          word (Word): word object for validation
-          x (int): coordinates on the x axis
-          y (int): coordinates on the y axis
-          direction (str): "V" if the word is on the y axis or "H" if the word is on the x axis
+            word (Word): word object for validation
+            x (int): coordinates on the x axis
+            y (int): coordinates on the y axis
+            direction (str): "V" if the word is on the y axis or "H" if the word is on the x axis
 
         returns:
-          Tuple: (bool, str): is possible put the word and message
+            Tuple: (bool, str): is possible put the word and message
         """
+
+        validation = self.__isWordGoOffBoard(word, x, y, direction)
+        
+        if not validation[0]:
+            return validation
 
         validation = self.__firstPawnIsCentralPosition(word, x, y, direction)
 
-        if validation[0]:
+        if not validation[0]:
+            return validation
+
+        validation = self.__placeWordsUsingExistingBoard(word)
+
+        if not validation[0]:
+            return validation
+
+        validation = self.__putCorrectPawn(word, x, y, direction)
+
+        if not validation[0]:
+            return validation
+        
+        validation = self.__isPawnInitalInSartOrFinalOtherPawns(word, x, y, direction)
+
+        if not validation[0]:
             return validation
 
         return (True, "")
@@ -72,24 +92,117 @@ class Board:
         Validation of first Pawns is in central position (7,7)
 
         Args:
-          word (Word): word object for validation
-          x (int): coordinates on the x axis
-          y (int): coordinates on the y axis
-          direction (str): "V" if the word is on the y axis or "H" if the word is on the x axis
+            word (Word): word object for validation
+            x (int): coordinates on the x axis
+            y (int): coordinates on the y axis
+            direction (str): "V" if the word is on the y axis or "H" if the word is on the x axis
 
         Returns:
-          Tuple: (bool, str): validation result and message
+            Tuple: (bool, str): validation result and message
         """
 
         if self.totalWords == 0:
             if direction == "V" and not (
-                x == 7 and 7 in range(y, y + word.getLengthWord())
+                x == 7 and 7 in range(y, y + word.getLengthWord() - 1)
             ):
                 return (False, "The first word must go through the central box (7,7).")
 
             elif direction == "H" and not (
-                y == 7 and 7 in range(x, x + word.getLengthWord())
+                y == 7 and 7 in range(x, x + word.getLengthWord() - 1)
             ):
                 return (False, "The first word must go through the central box (7,7).")
 
+        return (True, "")
+    
+    def __isWordGoOffBoard(self, word, x, y, direction):
+        """
+        Validation of length of word cannot go off the board
+
+        Args:
+            word (Word): word object for validation
+            x (int): coordinates on the x axis
+            y (int): coordinates on the y axis
+            direction (str): "V" if the word is on the y axis or "H" if the word is on the x axis
+
+        Returns:
+            Tuple: (bool, str): validation result and message
+        """
+        
+        if direction == "H" and (x < 0 or y < 0 or (y + word.getLengthWord() - 1) > 15):
+            return (False, "The word goes beyond the horizontal limit of the board.")
+        elif direction == "V" and (x < 0 or y < 0 or (x + word.getLengthWord() - 1) > 15):
+            return (False, "The word goes beyond the vertical limit of the board.")
+        
+        return (True, "")
+    
+    def __placeWordsUsingExistingBoard(self, word):
+        """
+        Validation of word using have a letter that exinsting in board
+
+        Args:
+            word (Word): word object for validation
+
+        Returns:
+            Tuple: (bool, str): validation result and message
+        """
+        if self.totalWords > 0:
+            boardSet = set().union(*self.board)
+            wordSet = set(word.word)
+            
+            if not wordSet.intersection(boardSet):
+                return (False, "All words, except the first, must use a tile already existing on the board.")
+            
+        return (True, "")
+    
+    def __putCorrectPawn(self, word, x, y, direction): 
+        """
+        Validation of Put a pawn in position empty o equal letter in position and put at least one new pawns
+
+        Args:
+            word (Word): word object for validation
+            x (int): coordinates on the x axis
+            y (int): coordinates on the y axis
+            direction (str): "V" if the word is on the y axis or "H" if the word is on the x axis
+
+        Returns:
+            Tuple: (bool, str): validation result and message
+        """
+        if self.totalWords > 0:
+            hasNewPawn = False
+            
+            for letter in word.word:
+                if self.board[x][y] != " " and letter != self.board[x][y]:
+                    return (False, "You cannot place a pawn on a square already occupied by a different pawn.")
+                elif self.board[x][y] == " ":
+                    hasNewPawn = True
+                    
+                if direction == "V":
+                    x += 1
+                else:
+                    y += 1
+            
+            if not hasNewPawn:
+                return (False, "At least one new pawn must be placed on the board.")
+            
+        return (True, "")
+    
+    def __isPawnInitalInSartOrFinalOtherPawns(self, word, x, y, direction):
+        """
+        Validation of new pawn initial in start or final other word in board
+
+        Args:
+            word (Word): word object for validation
+            x (int): coordinates on the x axis
+            y (int): coordinates on the y axis
+            direction (str): "V" if the word is on the y axis or "H" if the word is on the x axis
+
+        Returns:
+            Tuple: (bool, str): validation result and message
+        """
+        if self.totalWords > 0:
+            if direction == "V" and (x != 0 and self.board[x - 1][y] != " "):
+                return (False, "There are additional pawn at the beginning or end of a word.")
+            elif (x != 0 and self.board[x][y] - 1 != " "):
+                return (False, "There are additional pawn at the beginning or end of a word.")
+            
         return (True, "")

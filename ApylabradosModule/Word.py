@@ -30,7 +30,7 @@ class Word():
             bool: if empty or not
         """
         
-        return len(self.word) == 0;
+        return len(self.word) == 0
     
     def getFrequency(self):
         """

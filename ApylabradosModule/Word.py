@@ -4,7 +4,7 @@ class Word():
     def __init__(self):
         self.word = []
     
-    def areEqual(self, w):
+    def areEqual(self, w) -> bool:
         """
         returns True if they are equal
         
@@ -22,7 +22,7 @@ class Word():
         
         raise TypeError("the parameter must be an object of the word class")
     
-    def isEmpty(self):
+    def isEmpty(self) -> bool:
         """
         returns True if empty
         
@@ -32,7 +32,7 @@ class Word():
         
         return len(self.word) == 0
     
-    def getFrequency(self):
+    def getFrequency(self) -> FrequencyTable:
         """
         returns a FrequencyTable object with the pawns list
         
@@ -46,7 +46,7 @@ class Word():
         
         return frequencyTable
     
-    def getLengthWord(self):
+    def getLengthWord(self) -> int:
         """
         returns the length of word
         
@@ -57,7 +57,7 @@ class Word():
         return len(self.word)
 
     @classmethod
-    def readWord(cls):
+    def readWord(cls) -> 'Word':
         input_word = input("Introduce una palabra: ").strip().upper()
         word_obj = cls()
         word_obj.word = input_word
@@ -65,7 +65,7 @@ class Word():
         return word_obj
     
     @staticmethod
-    def readWordFromFile(file):
+    def readWordFromFile(file) -> 'Word':
         """"
         Read the word in file line
         

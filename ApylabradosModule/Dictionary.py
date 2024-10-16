@@ -4,7 +4,7 @@ class Dictionary():
     filePath = "/content/drive/MyDrive/Colab-Notebooks/Python-Basico/Final-Project/DataSets/dictionary.txt"
     
     @staticmethod
-    def validationWord(word):
+    def validationWord(word) -> bool:
         """
         Validate if the word exists in the dictionary
         
@@ -27,8 +27,7 @@ class Dictionary():
                 print("La palabra no se encuentra en el diccionario")
                 return False
         
-            else:
-                return True
+            return True
         
         except FileNotFoundError:
             print(f"The file no found in path {Dictionary.filePath}")

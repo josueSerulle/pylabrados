@@ -6,7 +6,7 @@ class Pawns():
     def __init__(self):
         self.letters = []
     
-    def addPawn(self,character):
+    def addPawn(self,character) -> None:
         """
         Add a single character to the letters list.
         
@@ -22,7 +22,7 @@ class Pawns():
         
         self.letters.append(character)
     
-    def addPawns(self, character, repetitions):
+    def addPawns(self, character, repetitions) -> None:
         """
         Add the character to the letters list repeatedly.
         
@@ -41,7 +41,7 @@ class Pawns():
         for _ in range(repetitions):
             self.addPawn(character)
     
-    def createBag(self, csv_path):
+    def createBag(self, csv_path) -> None:
         """
         Createss the bag of pawns from csv file.
         
@@ -71,7 +71,7 @@ class Pawns():
         except ValueError as ex:
             print(f"Error: {ex}")
     
-    def getFrequency(self):
+    def getFrequency(self) -> FrequencyTable:
         """
         returns a FrequencyTable object with the pawns list
         
@@ -85,7 +85,7 @@ class Pawns():
         
         return frequencyTable
         
-    def showPawns(self):
+    def showPawns(self) -> None:
         """
         Show the pawns that contained in the bag and the numbers of time each pawns is repeated
         """
@@ -93,7 +93,7 @@ class Pawns():
         frequrncyTable = self.getFrequency()
         frequrncyTable.showFrequency()
     
-    def takeRandomPawn(self):
+    def takeRandomPawn(self) -> str:
         """
         Removes and returns a random pawn from the letters list.
         
@@ -108,7 +108,7 @@ class Pawns():
         
         return random_pawn
 
-    def takePawn(self, character):
+    def takePawn(self, character) -> None:
         """
         Take a Pawns in player's pawns bag
         
@@ -118,7 +118,7 @@ class Pawns():
         
         self.letters.remove(character)
     
-    def getTotalPawns(self):
+    def getTotalPawns(self) -> int:
         """
         returns the total of pawns
         

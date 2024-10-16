@@ -4,7 +4,7 @@ class Board:
         self.totalWords = 0
         self.totalPawns = 0
 
-    def showBoard(self):
+    def showBoard(self) -> None:
         """
         show the bard game with row and column coordinate
         """
@@ -22,7 +22,7 @@ class Board:
             print(f"{i:02}")
             print("+" + "---+" * board_len)
 
-    def placeWord(self, player_pawns, word, x, y, direction):
+    def placeWord(self, player_pawns, word, x, y, direction) -> None:
         """
         Put the word in the board, removing used pawn form the player's bag
         Args:
@@ -46,7 +46,7 @@ class Board:
 
         self.totalWords += 1
 
-    def isPossible(self, word, x, y, direction):
+    def isPossible(self, word, x, y, direction) -> tuple:
         """
         Is possible put the word on board
 
@@ -80,14 +80,14 @@ class Board:
         if not validation[0]:
             return validation
         
-        validation = self.__isPawnInitalInSartOrFinalOtherPawns(word, x, y, direction)
+        validation = self.__isPawnInitalInSartOrFinalOtherPawns(x, y, direction)
 
         if not validation[0]:
             return validation
 
         return (True, "")
 
-    def __firstPawnIsCentralPosition(self, word, x, y, direction):
+    def __firstPawnIsCentralPosition(self, word, x, y, direction) -> tuple:
         """
         Validation of first Pawns is in central position (7,7)
 
@@ -114,7 +114,7 @@ class Board:
 
         return (True, "")
     
-    def __isWordGoOffBoard(self, word, x, y, direction):
+    def __isWordGoOffBoard(self, word, x, y, direction) -> tuple:
         """
         Validation of length of word cannot go off the board
 
@@ -135,7 +135,7 @@ class Board:
         
         return (True, "")
     
-    def __placeWordsUsingExistingBoard(self, word):
+    def __placeWordsUsingExistingBoard(self, word) -> tuple:
         """
         Validation of word using have a letter that exinsting in board
 
@@ -154,7 +154,7 @@ class Board:
             
         return (True, "")
     
-    def __putCorrectPawn(self, word, x, y, direction): 
+    def __putCorrectPawn(self, word, x, y, direction) -> tuple: 
         """
         Validation of Put a pawn in position empty o equal letter in position and put at least one new pawns
 
@@ -186,12 +186,11 @@ class Board:
             
         return (True, "")
     
-    def __isPawnInitalInSartOrFinalOtherPawns(self, word, x, y, direction):
+    def __isPawnInitalInSartOrFinalOtherPawns(self, x, y, direction) -> tuple:
         """
         Validation of new pawn initial in start or final other word in board
 
         Args:
-            word (Word): word object for validation
             x (int): coordinates on the x axis
             y (int): coordinates on the y axis
             direction (str): "V" if the word is on the y axis or "H" if the word is on the x axis

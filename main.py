@@ -26,9 +26,16 @@ def main():
     y = int(input("Introduce la coordenada Y: "))
     direction = input("Introduce la dirección (H para horizontal, V para vertical): ").upper()
     
-    board.placeWord(player_pawns, new_word, x, y, direction)    
-    board.showBoard()
-    
+    missing_pawns = board.getPawns(new_word, x, y, direction)
+    missing_pawns_fq = missing_pawns.getFrequency()
+        
+    if FrequencyTable.isSubset(missing_pawns_fq, player_pawns_fq):
+        print("El jugador tiene las fichas necesarias.")
+        board.placeWord(player_pawns, new_word, x, y, direction)
+        board.showBoard()
+    else:
+      print("El jugador no tiene las fichas necesarias para formar la palabra.")
+
     while(player_pawns.getTotalPawns() < 7):
       player_pawns.addPawn(bag_of_pawns.takeRandomPawn())
 

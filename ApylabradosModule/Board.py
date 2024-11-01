@@ -1,8 +1,14 @@
+from Word import Word
+from FrequencyTable import FrequencyTable
+from Pawns import Pawns
+
 class Board:
+
     def __init__(self):
         self.board = [[" " for _ in range(15)] for _ in range(15)]
         self.totalWords = 0
         self.totalPawns = 0
+        self.score = 0
 
     def showBoard(self) -> None:
         """
@@ -38,6 +44,7 @@ class Board:
                 player_pawns.takePawn(letter)
                 self.totalPawns += 1
                 self.board[x][y] = letter
+                self.score += Pawns.getPoinst(letter)
 
             if direction == "V":
                 x += 1
@@ -86,6 +93,57 @@ class Board:
             return validation
 
         return (True, "")
+
+    def getPawns(self, word, x, y, direction) -> Word:
+        """
+        get Pawns missing on the board for make a word
+
+        Args:
+            word (Word): word object for validation
+            x (int): coordinates on the x axis
+            y (int): coordinates on the y axis
+            direction (str): "V" if the word is on the y axis or "H" if the word is on the x axis
+
+        returns:
+            Word: is possible put the word and message
+        """
+        
+        missing_pawns = Word()
+        possible, message = self.isPossible(word, x, y, direction)
+        
+        if not possible:
+            print(message)
+            return word
+        
+        for letter in word.word:
+            if self.board[x][y] != letter:
+                missing_pawns.word.append(letter)
+            
+            if direction == "V":
+                x += 1
+            else:
+                y += 1
+        
+        return missing_pawns
+    
+    def showWordPlacement(self, pawns, word) -> None:
+        """
+        Displays all possible placements of the word on the board.
+
+        Args:
+            pawns (Pawns): The player's pawns
+            word (Word): The word to place
+        """
+        for x in range(len(self.board)):
+            for y in range(len(self.board[0])):
+                for direction in ["H", "V"]:
+                    print("{}:".format("Verical" if direction == "V" else "Horizontal"))
+                    
+                    if self.isPossible(word, x, y, direction)[0]:
+                        needPawns = self.getPawns(word, x, y, direction)
+                        
+                        if FrequencyTable.isSubset(needPawns.getFrequency(), pawns.getFrequency()):
+                            print("(x = {}, y = {})".format(x, y))
 
     def __firstPawnIsCentralPosition(self, word, x, y, direction) -> tuple:
         """

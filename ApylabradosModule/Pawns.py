@@ -3,6 +3,13 @@ from numpy import random
 from .FrequencyTable import FrequencyTable
 
 class Pawns():
+    
+    points = {
+        'A': 1, 'B': 3, 'C': 3, 'D': 2, 'E': 1, 'F': 4, 'G': 2, 'H': 4, 'I': 1, 'J': 8, 'K': 5, 'L': 1, 
+        'M': 3, 'N': 1, 'O': 1, 'P': 3, 'Q': 10, 'R': 1, 'S': 1, 'T': 1, 'U': 1, 'V': 4, 'W': 4, 'X': 8, 
+        'Y': 4, 'Z': 10
+    }
+    
     def __init__(self):
         self.letters = []
     
@@ -127,3 +134,31 @@ class Pawns():
         """
         
         return len(self.letters)
+    
+    @staticmethod
+    def getPoinst(character) -> int:
+        """
+        Returns the point value of a given letter.
+        
+        Args:
+            character (str): The character (letter)
+            
+        Returns:
+            int: The score of the letter
+        """
+        return Pawns.points.get(character.upper(), 0)
+    
+    @staticmethod
+    def showPoints() -> None:
+        """
+        Displays the points for each letter using the getPoints method.
+        """
+        count = 0
+        end = " "
+        
+        print("Puntos de cada ficha: ")
+        
+        for letter, point in Pawns.points.items():
+            print("{}:{}{}".format(letter, " " if point < 9 else "", point), end= end)
+            count += 1
+            end = "\n" if count % 3 == 2 else " "

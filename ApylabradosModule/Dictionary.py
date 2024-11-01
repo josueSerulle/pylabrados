@@ -1,7 +1,7 @@
-from .Word import Word
-
+from Word import Word
+from FrequencyTable import FrequencyTable
 class Dictionary():
-    filePath = "/content/drive/MyDrive/Colab-Notebooks/Python-Basico/Final-Project/DataSets/dictionary.txt"
+    filePath = "../DataSets/dictionary.txt"
     
     @staticmethod
     def validationWord(word) -> bool:
@@ -31,4 +31,50 @@ class Dictionary():
         
         except FileNotFoundError:
             print(f"The file no found in path {Dictionary.filePath}")
+    
+    @staticmethod
+    def showWords(pawns) -> None:
+        """
+        Displays all possible words that can be formed with the given tiles.
         
+        Args:
+            pawns (Pawns): The player's tiles
+        """
+        availableLetters = pawns.getFrequency()
+        
+        with open(Dictionary.filePath) as file:
+            word = Word.readWordFromFile(file)
+            
+            while (not word.isEmpty()):
+                wordFrequency = word.getFrequency()
+                
+                if FrequencyTable.isSubset(wordFrequency, availableLetters):
+                    print(word)
+                
+                word = Word.readWordFromFile(file)
+    
+    @staticmethod
+    def showWordPlus(pawns, character) -> None:
+        """
+        Displays all possible words containing the specified character
+        that can be formed with the given pawns.
+        
+        Args:
+            pawns (Pawns): The player's pawns
+            character (str): The specified character
+        """
+        
+        availableLetters = pawns.getFrequency()
+        availableLetters.update(character)
+        
+        with open(Dictionary.filePath) as file:
+            word = Word.readWordFromFile(file)
+            
+            while (not word.isEmpty()):
+                if character in word.word:
+                    wordFrequency = word.getFrequency()
+                
+                    if FrequencyTable.isSubset(wordFrequency, availableLetters):
+                        print(word)
+                
+                word = Word.readWordFromFile(file)

@@ -19,6 +19,15 @@ class FrequencyTable():
             character(str): The to be updated
         """
         self.frequencies[character.upper()] += 1
+    
+    def delete(self, character) -> None:
+        """
+        delete the frequency of chracter
+        
+        Args:
+            character(str): The to be updated
+        """
+        self.frequencies[character.upper()] -= 1
         
     @staticmethod
     def isSubset(freq_table1, freq_table2) -> bool:

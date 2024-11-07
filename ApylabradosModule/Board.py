@@ -1,6 +1,6 @@
-from Word import Word
-from FrequencyTable import FrequencyTable
-from Pawns import Pawns
+from .Word import Word
+from .FrequencyTable import FrequencyTable
+from .Pawns import Pawns
 
 class Board:
 
@@ -163,12 +163,12 @@ class Board:
             if direction == "V" and not (
                 x == 7 and 7 in range(y, y + word.getLengthWord() - 1)
             ):
-                return (False, "The first word must go through the central box (7,7).")
+                return (False, "La primera palabra debe pasar por la casilla central (7,7).")
 
             elif direction == "H" and not (
                 y == 7 and 7 in range(x, x + word.getLengthWord() - 1)
             ):
-                return (False, "The first word must go through the central box (7,7).")
+                return (False, "La primera palabra debe pasar por la casilla central (7,7).")
 
         return (True, "")
     
@@ -187,9 +187,9 @@ class Board:
         """
         
         if direction == "H" and (x < 0 or y < 0 or (y + word.getLengthWord() - 1) > 15):
-            return (False, "The word goes beyond the horizontal limit of the board.")
+            return (False, "La palabra sobrepasa el límite horizontal del tablero.")
         elif direction == "V" and (x < 0 or y < 0 or (x + word.getLengthWord() - 1) > 15):
-            return (False, "The word goes beyond the vertical limit of the board.")
+            return (False, "La palabra sobrepasa el límite vertical del tablero.")
         
         return (True, "")
     
@@ -208,7 +208,7 @@ class Board:
             wordSet = set(word.word)
             
             if not wordSet.intersection(boardSet):
-                return (False, "All words, except the first, must use a tile already existing on the board.")
+                return (False, "Todas las palabras, excepto la primera, deben utilizar una ficha ya existente en el tablero.")
             
         return (True, "")
     
@@ -230,7 +230,7 @@ class Board:
             
             for letter in word.word:
                 if self.board[x][y] != " " and letter != self.board[x][y]:
-                    return (False, "You cannot place a pawn on a square already occupied by a different pawn.")
+                    return (False, "No se puede colocar una ficha en una casilla que ya esté ocupada por un ficha diferente.")
                 elif self.board[x][y] == " ":
                     hasNewPawn = True
                     
@@ -240,7 +240,7 @@ class Board:
                     y += 1
             
             if not hasNewPawn:
-                return (False, "At least one new pawn must be placed on the board.")
+                return (False, "Se debe colocar al menos una ficha nuevo en el tablero.")
             
         return (True, "")
     
@@ -258,8 +258,8 @@ class Board:
         """
         if self.totalWords > 0:
             if direction == "V" and (x != 0 and self.board[x - 1][y] != " "):
-                return (False, "There are additional pawn at the beginning or end of a word.")
+                return (False, "Hay fichas adicionales al principio o al final de una palabra.")
             elif (x != 0 and self.board[x][y] - 1 != " "):
-                return (False, "There are additional pawn at the beginning or end of a word.")
+                return (False, "Hay fichas adicionales al principio o al final de una palabra.")
             
         return (True, "")

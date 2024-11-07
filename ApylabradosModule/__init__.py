@@ -5,4 +5,4 @@ from .FrequencyTable import FrequencyTable
 from .Board import Board
 from .Gameplay import Gameplay
 
-__all__ = ['Pawns', 'Word', 'Dictionary','FrequencyTable','Board','Gameplay']
+__all__ = ['Pawns', 'Word', 'Dictionary','FrequencyTable','Board', 'Gameplay']

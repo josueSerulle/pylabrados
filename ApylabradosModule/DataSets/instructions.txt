@@ -1,0 +1,6 @@
+Intrucciones del juego:
+    Introduce las palabras en MAYUSCULAS
+    La primera palabra debe pasar siempre por la casilla central
+    Savo la primera palabra, debe formar el resto de palabras aprovechando al menos una ficha ya situada sobre el tablero
+    Solamente hay dos posibles direcciones para colacar las palabras V (vertical) y H (horizontal)
+=============================================================================================================================================

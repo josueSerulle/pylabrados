@@ -1,7 +1,8 @@
-from Word import Word
-from FrequencyTable import FrequencyTable
+from pathlib import Path
+from .Word import Word
+from .FrequencyTable import FrequencyTable
 class Dictionary():
-    filePath = "../DataSets/dictionary.txt"
+    filePath = Path(__file__).parent / "DataSets/dictionary.txt"
     
     @staticmethod
     def validationWord(word) -> bool:
@@ -20,6 +21,7 @@ class Dictionary():
         try:
             with open(Dictionary.filePath) as file:
                 w = Word.readWordFromFile(file)
+                
                 while (not w.isEmpty() and not word.areEqual(w)):
                     w = Word.readWordFromFile(file)
             
@@ -41,15 +43,20 @@ class Dictionary():
             pawns (Pawns): The player's tiles
         """
         availableLetters = pawns.getFrequency()
+        count = 0
+        end = " "
         
         with open(Dictionary.filePath) as file:
             word = Word.readWordFromFile(file)
             
             while (not word.isEmpty()):
+                n = word.getLengthWord()
                 wordFrequency = word.getFrequency()
                 
                 if FrequencyTable.isSubset(wordFrequency, availableLetters):
-                    print(word)
+                    print(word, end = end * (10 - n) if end == " " else end)
+                    count += 1
+                    end = "\n" if count % 5 == 4 else " "
                 
                 word = Word.readWordFromFile(file)
     
@@ -66,15 +73,21 @@ class Dictionary():
         
         availableLetters = pawns.getFrequency()
         availableLetters.update(character)
+        count = 0
+        end = " "
         
         with open(Dictionary.filePath) as file:
             word = Word.readWordFromFile(file)
             
             while (not word.isEmpty()):
+                n = word.getLengthWord()
+                
                 if character in word.word:
                     wordFrequency = word.getFrequency()
                 
                     if FrequencyTable.isSubset(wordFrequency, availableLetters):
-                        print(word)
-                
+                        print(word, end = end * (10 - n) if end == " " else end)
+                        count += 1
+                        end = "\n" if count % 5 == 4 else " "
+                        
                 word = Word.readWordFromFile(file)

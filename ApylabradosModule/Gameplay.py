@@ -1,3 +1,4 @@
+from pathlib import Path
 from .Pawns import Pawns
 from .Board import Board
 from .Dictionary import Dictionary
@@ -15,7 +16,19 @@ class Gameplay:
         self._bag_of_pawns = Pawns()
         self._board = Board()
         
-        self._bag_of_pawns.createBag("DataSets/bag_of_pawns.csv")
+        self._bag_of_pawns.createBag(Path(__file__).parent / "DataSets/bag_of_pawns.csv")
+    
+    @property
+    def getEnd(self) -> bool:
+        return self._end
+    
+    @property
+    def getBagOfPawns(self) -> Pawns:
+        return self._bag_of_pawns
+    
+    @property
+    def getBoard(self) -> Board:
+        return self._board
     
     def startGame(self) -> None:
         self.welcome()
@@ -26,7 +39,7 @@ class Gameplay:
         Display welcome message 
         """
         
-        filePath = "../Datasets/welcome_message.txt"
+        filePath = Path(__file__).parent / "DataSets/welcome_message.txt"
         with open(filePath) as file:
             print(file.read())
     
@@ -35,16 +48,27 @@ class Gameplay:
         Display the game instructions
         """
         
-        filePath = "../Datasets/instructions.txt"
+        filePath = Path(__file__).parent / "DataSets/instructions.txt"
         with open(filePath) as file:
             print(file.read())
     
+    def dealPawns(self) -> None:
+        """
+        Deal pawns to the player until the 7
+        """
+        
+        while(self._player_pawns.getTotalPawns() < 7):
+            self._player_pawns.addPawn(self._bag_of_pawns.takeRandomPawn())
+        
+        print("Estas son tus fichas:")
+        self._player_pawns.showPawns()
+        
     def showMenu(self) -> None:
         """
         Displays Menu options
         """
         
-        filePath = "../Datasets/menu.txt"
+        filePath = Path(__file__).parent / "DataSets/menu.txt"
         
         if self._show_menu:
             with open(filePath) as file:
@@ -81,7 +105,7 @@ class Gameplay:
         Display the game options
         """
         
-        filePath = "../Datasets/game_options.txt"
+        filePath = Path(__file__).parent / "DataSets/game_options.txt"
         
         if self._show_game_option:
             with open(filePath) as file:
@@ -152,7 +176,6 @@ class Gameplay:
         and that it can be formed with the pawns available to the player and those placed on the board.
         """
 
-        print("Introduce tu palabra:")
         self._word = Word.readWord()
         word_ft = self._word.getFrequency()
         player_pawns_ft = self._player_pawns.getFrequency()
@@ -188,7 +211,6 @@ class Gameplay:
                 print("No puedes formar esa palabra con tus fichas")
                 
             self.showMenu()
-            
             return None
         
         self.showGameOption()
@@ -215,15 +237,21 @@ class Gameplay:
             self.showGameOption()
             return None
         
-        #### Me quede aqui
+        needed_pawns = self._board.getPawns(self._word, x, y, direction)
+        
+        if FrequencyTable.isSubset(needed_pawns.getFrequency(), self._player_pawns.getFrequency()):
+            self._board.placeWord(self._player_pawns, self._word, x, y, direction)
+            self._board.showBoard()
+            print("\nPuntos: {}\n".format(self._board.score))
+            return None
+        
+        print("Las fichas de que dispones no son suficientes")
+        self.showGameOption()
     
-    def dealPawns(self) -> None:
+    def endGame(self):
         """
-        Deal pawns to the player until the 7
+        Finish current game
         """
         
-        while(self._player_pawns.getTotalPawns() < 7):
-            self._player_pawns.addPawn(self._bag_of_pawns.takeRandomPawn())
-        
-        print("Estas son tus fichas:")
-        self._player_pawns.showPawns()
+        print("Fin del juego")
+        self._end = True

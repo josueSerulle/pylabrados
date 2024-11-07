@@ -60,7 +60,7 @@ class Word():
     def readWord(cls) -> 'Word':
         input_word = input("Introduce una palabra: ").strip().upper()
         word_obj = cls()
-        word_obj.word = input_word
+        word_obj.word = list(input_word)
         
         return word_obj
     

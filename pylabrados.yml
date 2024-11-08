@@ -1,6 +1,7 @@
 name: pylabrados
 channels:
   - defaults
+  - conda-forge 
 dependencies:
   - blas=1.0
   - bzip2=1.0.8
@@ -21,9 +22,6 @@ dependencies:
   - tbb=2021.8.0
   - tk=8.6.14
   - tzdata=2024a
-  - vc=14.40
-  - vs2015_runtime=14.40.33807
   - wheel=0.44.0
   - xz=5.4.6
   - zlib=1.2.13
-prefix: C:\Users\jota_\anaconda3\envs\pylabrados

@@ -1,5 +1,5 @@
-Para continuar, introduce IW
-Para cambiar la palabra, introdue EP
+Para continuar, introduce EP
+Para cambiar la palabra, introdue IW
 Para conultar tus fichas, introduce MP
 Para consutlar tus puntos actuales, introduce S
 Para consultar los puntos de cada ficha, introduce PP

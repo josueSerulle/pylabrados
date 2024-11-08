@@ -134,8 +134,10 @@ class Board:
             pawns (Pawns): The player's pawns
             word (Word): The word to place
         """
+
         for x in range(len(self.board)):
             for y in range(len(self.board[0])):
+                print(x,y)
                 for direction in ["H", "V"]:
                     print("{}:".format("Verical" if direction == "V" else "Horizontal"))
                     

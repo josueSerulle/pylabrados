@@ -180,6 +180,7 @@ class Gameplay:
         word_ft = self._word.getFrequency()
         player_pawns_ft = self._player_pawns.getFrequency()
         isInDictionary = Dictionary.validationWord(self._word)
+        wordIsSubset = True
         
         if self._board.totalWords == 0:
             wordIsSubset = FrequencyTable.isSubset(word_ft, player_pawns_ft)
@@ -220,14 +221,24 @@ class Gameplay:
         Allows the player to input the position and orientation of a word via the console.
         Checks if the word can be placed at that location.
         """
-
-        x = int(input("Introduce coordenada de la fila: "))
-        y = int(input("Introduce coordenada de la columna: "))
+        try:
+            x = int(input("Introduce coordenada de la fila: "))
+            y = int(input("Introduce coordenada de la columna: "))
+            
+            if not 0 <= x <= 14 or not 0 <= y <= 14:
+                print("La coordenadas debe estar entre 0 y 14.")
+                self.introduceCoordinatesAndDirection()
+                return None
+        except ValueError:
+            print("En las coordenadas debes ingresar un número entero.")
+            self.introduceCoordinatesAndDirection()
+            return None
+        
         direction = input("Introduce dirección: ").upper()
         
         if direction != "V" and direction != "H":
             print("Recuerda: solamente hay dos posibles direcciones para colocar las palabras: V (vertical) y H (horizontal)")
-            self.showGameOption()
+            self.introduceCoordinatesAndDirection()
             return None
 
         possible, message = self._board.isPossible(self._word, x, y, direction)

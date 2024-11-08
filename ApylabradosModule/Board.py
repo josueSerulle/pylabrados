@@ -137,14 +137,13 @@ class Board:
 
         for x in range(len(self.board)):
             for y in range(len(self.board[0])):
-                print(x,y)
                 for direction in ["H", "V"]:
-                    print("{}:".format("Verical" if direction == "V" else "Horizontal"))
                     
                     if self.isPossible(word, x, y, direction)[0]:
                         needPawns = self.getPawns(word, x, y, direction)
                         
                         if FrequencyTable.isSubset(needPawns.getFrequency(), pawns.getFrequency()):
+                            print("{}:".format("Verical" if direction == "V" else "Horizontal"))
                             print("(x = {}, y = {})".format(x, y))
 
     def __firstPawnIsCentralPosition(self, word, x, y, direction) -> tuple:
@@ -187,10 +186,10 @@ class Board:
         Returns:
             Tuple: (bool, str): validation result and message
         """
-        
-        if direction == "H" and (x < 0 or y < 0 or (y + word.getLengthWord() - 1) > 15):
+
+        if direction == "H" and (x < 0 or y < 0 or (y + word.getLengthWord() - 1) >= 15):
             return (False, "La palabra sobrepasa el límite horizontal del tablero.")
-        elif direction == "V" and (x < 0 or y < 0 or (x + word.getLengthWord() - 1) > 15):
+        elif direction == "V" and (x < 0 or y < 0 or (x + word.getLengthWord() - 1) >= 15):
             return (False, "La palabra sobrepasa el límite vertical del tablero.")
         
         return (True, "")
@@ -261,7 +260,7 @@ class Board:
         if self.totalWords > 0:
             if direction == "V" and (x != 0 and self.board[x - 1][y] != " "):
                 return (False, "Hay fichas adicionales al principio o al final de una palabra.")
-            elif (x != 0 and self.board[x][y] - 1 != " "):
+            elif (x != 0 and self.board[x][y  - 1] != " "):
                 return (False, "Hay fichas adicionales al principio o al final de una palabra.")
             
         return (True, "")

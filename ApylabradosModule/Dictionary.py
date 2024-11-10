@@ -33,6 +33,7 @@ class Dictionary():
         
         except FileNotFoundError:
             print(f"The file no found in path {Dictionary.filePath}")
+            return False
     
     @staticmethod
     def showWords(pawns) -> None:

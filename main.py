@@ -13,7 +13,7 @@ def main():
     print("¡Te has quedado sin fichas en la bolsa!")
     print("Fin del juego")
 
-  print("¡Enhorabuena! Has conseguido {} puntos en esta partida".format(gameplay.getBoard.score))
+  print("¡Enhorabuena! Has conseguido {} puntos en esta partida".format(gameplay.getBoard.getScore))
 
 if __name__ == "__main__":
   main()

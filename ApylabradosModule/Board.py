@@ -5,28 +5,42 @@ from .Pawns import Pawns
 class Board:
 
     def __init__(self):
-        self.board = [[" " for _ in range(15)] for _ in range(15)]
-        self.totalWords = 0
-        self.totalPawns = 0
-        self.score = 0
+        self.__board = [[" " for _ in range(15)] for _ in range(15)]
+        self.__totalWords = 0
+        self.__totalPawns = 0
+        self.__score = 0
 
+    @property
+    def getBoard(self) -> list:
+        return self.__board
+    
+    @property
+    def getBoardlen(self) -> int:
+        return len(self.__board)
+    
+    @property
+    def getScore(self) -> int:
+        return self.__score
+    
+    @property
+    def getTotalWords(self) -> int:
+        return self.__totalWords
+    
     def showBoard(self) -> None:
         """
         show the bard game with row and column coordinate
         """
 
-        board_len = len(self.board)
-
-        for n in range(board_len):
+        for n in range(self.getBoardlen):
             print(f" {n:02}", end=" ")
-        print("\n+" + "---+" * board_len)
+        print("\n+" + "---+" * self.getBoardlen)
 
-        for i in range(board_len):
+        for i in range(self.getBoardlen):
             print("|", end=" ")
-            for j in range(board_len):
-                print(self.board[i][j] + " |", end=" ")
+            for j in range(self.getBoardlen):
+                print(self.__board[i][j] + " |", end=" ")
             print(f"{i:02}")
-            print("+" + "---+" * board_len)
+            print("+" + "---+" * self.getBoardlen)
 
     def placeWord(self, player_pawns, word, x, y, direction) -> None:
         """
@@ -40,18 +54,18 @@ class Board:
         """
 
         for letter in word.word:
-            if letter != self.board[x][y]:
+            if letter != self.__board[x][y]:
                 player_pawns.takePawn(letter)
-                self.totalPawns += 1
-                self.board[x][y] = letter
-                self.score += Pawns.getPoinst(letter)
+                self.__totalPawns += 1
+                self.__board[x][y] = letter
+                self.__score += Pawns.getPoinst(letter)
 
             if direction == "V":
                 x += 1
             else:
                 y += 1
 
-        self.totalWords += 1
+        self.__totalWords += 1
 
     def isPossible(self, word, x, y, direction) -> tuple:
         """
@@ -116,7 +130,7 @@ class Board:
             return word
         
         for letter in word.word:
-            if self.board[x][y] != letter:
+            if self.__board[x][y] != letter:
                 missing_pawns.word.append(letter)
             
             if direction == "V":
@@ -135,8 +149,8 @@ class Board:
             word (Word): The word to place
         """
 
-        for x in range(len(self.board)):
-            for y in range(len(self.board[0])):
+        for x in range(self.getBoardlen):
+            for y in range(self.getBoardlen):
                 for direction in ["H", "V"]:
                     
                     if self.isPossible(word, x, y, direction)[0]:
@@ -160,7 +174,7 @@ class Board:
             Tuple: (bool, str): validation result and message
         """
 
-        if self.totalWords == 0:
+        if self.__totalWords == 0:
             if direction == "V" and not (
                 x == 7 and 7 in range(y, y + word.getLengthWord() - 1)
             ):
@@ -204,8 +218,8 @@ class Board:
         Returns:
             Tuple: (bool, str): validation result and message
         """
-        if self.totalWords > 0:
-            boardSet = set().union(*self.board)
+        if self.__totalWords > 0:
+            boardSet = set().union(*self.__board)
             wordSet = set(word.word)
             
             if not wordSet.intersection(boardSet):
@@ -226,13 +240,13 @@ class Board:
         Returns:
             Tuple: (bool, str): validation result and message
         """
-        if self.totalWords > 0:
+        if self.__totalWords > 0:
             hasNewPawn = False
             
             for letter in word.word:
-                if self.board[x][y] != " " and letter != self.board[x][y]:
+                if self.__board[x][y] != " " and letter != self.__board[x][y]:
                     return (False, "No se puede colocar una ficha en una casilla que ya esté ocupada por un ficha diferente.")
-                elif self.board[x][y] == " ":
+                elif self.__board[x][y] == " ":
                     hasNewPawn = True
                     
                 if direction == "V":
@@ -257,10 +271,10 @@ class Board:
         Returns:
             Tuple: (bool, str): validation result and message
         """
-        if self.totalWords > 0:
-            if direction == "V" and (x != 0 and self.board[x - 1][y] != " "):
+        if self.__totalWords > 0:
+            if direction == "V" and (x != 0 and self.__board[x - 1][y] != " "):
                 return (False, "Hay fichas adicionales al principio o al final de una palabra.")
-            elif (x != 0 and self.board[x][y  - 1] != " "):
+            elif (x != 0 and self.__board[x][y  - 1] != " "):
                 return (False, "Hay fichas adicionales al principio o al final de una palabra.")
             
         return (True, "")

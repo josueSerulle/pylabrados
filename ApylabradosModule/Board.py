@@ -1,6 +1,11 @@
+from pathlib import Path
 from .Word import Word
 from .FrequencyTable import FrequencyTable
 from .Pawns import Pawns
+from matplotlib.patches import Polygon
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 
 class Board:
 
@@ -31,16 +36,55 @@ class Board:
         show the bard game with row and column coordinate
         """
 
-        for n in range(self.getBoardlen):
-            print(f" {n:02}", end=" ")
-        print("\n+" + "---+" * self.getBoardlen)
+        xycolors = pd.read_csv( Path(__file__).parent / "DataSets/xycolor_board.csv")
+        
+        # create the plt figurte that will save to board
+        figure = plt.figure(figsize= (10, 10))
+        ax = figure.add_subplot(111)
 
-        for i in range(self.getBoardlen):
-            print("|", end=" ")
+        # draw the vertical and horizontal line
+        for x in range(self.getBoardlen + 1):
+            ax.plot([x, x], [0, self.getBoardlen], 'k')
+        
+        for y in range(self.getBoardlen + 1):
+            ax.plot([0, self.getBoardlen], [y, y], 'k')
+        
+        # define the limits of the axes
+        ax.set_xlim(-1, self.getBoardlen + 1)
+        ax.set_ylim(-1, self.getBoardlen + 1)
+        
+        # scale so that grill occupies the entire figure
+        ax.set_position((0, 0, 1, 1))    
+        ax.set_axis_off()
+
+        for row in xycolors.itertuples():
+            polygon = Polygon(self.__generateVertex(row[1], row[2]), color = row[3])
+            ax.add_artist(polygon)
+
+        for i in range (self.getBoardlen):
+            # draw the number in the board
+            # top number
+            ax.text(
+                self.__transformation(i + 0.5), self.__transformation(self.getBoardlen + 0.5), str(i), 
+                verticalalignment = "center", horizontalalignment = "center", fontsize = 20, 
+                fontfamily = "fantasy", fontweight = "bold", transform = ax.transAxes
+            )
+
+            # right number
+            ax.text(
+                self.__transformation(self.getBoardlen + 0.5), self.__transformation(i + 0.5), str(i), 
+                verticalalignment = "center", horizontalalignment = "center", fontsize = 20, 
+                fontfamily = "fantasy", fontweight = "bold", transform = ax.transAxes
+            )
+        
+            # draw the letters in the board
             for j in range(self.getBoardlen):
-                print(self.__board[i][j] + " |", end=" ")
-            print(f"{i:02}")
-            print("+" + "---+" * self.getBoardlen)
+                ax.text(
+                    self.__transformation(j + 0.5), self.__transformation(14 - i + 0.5), 
+                    self.__board[i][j], verticalalignment = "center", horizontalalignment = "center",
+                    fontsize = 15, transform = ax.transAxes
+                )
+        plt.show()
 
     def placeWord(self, player_pawns, word, x, y, direction) -> None:
         """
@@ -278,3 +322,33 @@ class Board:
                 return (False, "Hay fichas adicionales al principio o al final de una palabra.")
             
         return (True, "")
+    
+    def __transformation(self, x) -> int:
+        """
+        Convert interval (-1,16) to interval (0,1)
+
+        Args:
+            x (int): interval for transformation
+
+        Returns:
+            int: the transformation interval
+        """
+        
+        return (x + 1) / 17
+    
+    def __generateVertex(self, center_x, center_y) -> np.ndarray:
+        """
+        Generate the vertices of a square centered at (center_x, center_y).
+        
+        Args:
+            center_x (int): x-coordinate of the center
+            center_y (int): y-coordinate of the center
+
+        Returns:
+            np.ndarray: 2D array of vertices representing the square
+        """
+        
+        return np.array([
+            [center_x - 0.5, center_y - 0.5], [center_x - 0.5, center_y + 0.5],
+            [center_x + 0.5, center_y + 0.5], [center_x + 0.5, center_y - 0.5]
+        ])

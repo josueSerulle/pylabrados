@@ -17,17 +17,18 @@ class Gameplay:
         self.__board = Board()
         
         self.__bag_of_pawns.createBag(Path(__file__).parent / "DataSets/bag_of_pawns.csv")
+        self.__board.setMultiplier()
     
     @property
-    def getEnd(self) -> bool:
+    def end(self) -> bool:
         return self.__end
     
     @property
-    def getBagOfPawns(self) -> Pawns:
+    def bagOfPawns(self) -> Pawns:
         return self.__bag_of_pawns
     
     @property
-    def getBoard(self) -> Board:
+    def board(self) -> Board:
         return self.__board
     
     def startGame(self) -> None:
@@ -60,9 +61,8 @@ class Gameplay:
         while(self.__player_pawns.getTotalPawns() < 7):
             self.__player_pawns.addPawn(self.__bag_of_pawns.takeRandomPawn())
         
-        print("Estas son tus fichas:")
-        self.__player_pawns.showPawns()
-        
+        self.__board.showBoard(self.__player_pawns.letters)
+
     def showMenu(self) -> None:
         """
         Displays Menu options
@@ -88,8 +88,6 @@ class Gameplay:
         elif option == "MP":
             print("Estas son tus fichas:")
             self.__player_pawns.showPawns()
-        elif option == "S":
-            print("Puntos: {}".format(self.__board.getScore))
         elif option == "PP":
             Pawns.showPoints()
         elif option == "HW":
@@ -127,8 +125,6 @@ class Gameplay:
         elif option == "MP":
             print("Estas son tus fichas:")
             self.__player_pawns.showPawns()
-        elif option == "S":
-            print("Puntos: {}".format(self.__board.getScore))
         elif option == "PP":
             Pawns.showPoints()
         elif option == "HW":
@@ -149,18 +145,18 @@ class Gameplay:
         
         print("Estas son las posibles palabras a formar:")
         
-        if self.__board.getTotalWords == 0:
+        if self.__board.totalWords == 0:
             Dictionary.showWords(self.__player_pawns)
             return None
         
-        board_len = self.__board.getBoardlen
+        board_len = self.__board.boardLen
         board_letters = []
         
         for x in range(board_len):
             for y in range(board_len):
-                if self.__board.getBoard[x][y] != " " and  self.__board.getBoard[x][y] not in board_letters:
-                    board_letters.append(self.__board.getBoard[x][y])
-                    Dictionary.showWordPlus(self.__player_pawns, self.__board.getBoard[x][y])
+                if self.__board.board[x][y] != " " and  self.__board.board[x][y] not in board_letters:
+                    board_letters.append(self.__board.board[x][y])
+                    Dictionary.showWordPlus(self.__player_pawns, self.__board.board[x][y])
     
     def helpWithPosition(self) -> None:
         """
@@ -182,23 +178,23 @@ class Gameplay:
         isInDictionary = Dictionary.validationWord(self.__word)
         wordIsSubset = True
         
-        if self.__board.getBoard == 0:
+        if self.__board.board == 0:
             wordIsSubset = FrequencyTable.isSubset(word_ft, player_pawns_ft)
         else:
-            board_len = self.__board.getBoardlen
+            board_len = self.__board.boardLen
             board_letters = []
             flag = False
             
             for x in range(board_len):
                 for y in range(board_len):
                     
-                    if self.__board.getBoard[x][y] != " " and self.__board.getBoard[x][y] not in board_letters:
-                        board_letters.append(self.__board.getBoard[x][y])
+                    if self.__board.board[x][y] != " " and self.__board.board[x][y] not in board_letters:
+                        board_letters.append(self.__board.board[x][y])
                         player_pawns = player_pawns_ft
-                        player_pawns.update(self.__board.getBoard[x][y])
+                        player_pawns.update(self.__board.board[x][y])
                         
                         wordIsSubset = FrequencyTable.isSubset(word_ft, player_pawns)
-                        player_pawns.delete(self.__board.getBoard[x][y])
+                        player_pawns.delete(self.__board.board[x][y])
                         
                         if wordIsSubset:
                             flag = True
@@ -252,8 +248,6 @@ class Gameplay:
         
         if FrequencyTable.isSubset(needed_pawns.getFrequency(), self.__player_pawns.getFrequency()):
             self.__board.placeWord(self.__player_pawns, self.__word, x, y, direction)
-            self.__board.showBoard()
-            print("\nPuntos: {}\n".format(self.__board.getScore))
             return None
         
         print("Las fichas de que dispones no son suficientes")

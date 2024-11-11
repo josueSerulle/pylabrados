@@ -1,7 +1,6 @@
 Para continuar, introduce EP
 Para cambiar la palabra, introdue IW
 Para conultar tus fichas, introduce MP
-Para consutlar tus puntos actuales, introduce S
 Para consultar los puntos de cada ficha, introduce PP
 Para obtener ayuda con las posibles palabras a forma con tus fichas, introduce HW
 Para obtener ayuda con las posibles posiciones para la palabras, introduce HP

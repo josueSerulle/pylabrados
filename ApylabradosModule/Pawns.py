@@ -11,7 +11,11 @@ class Pawns():
     }
     
     def __init__(self):
-        self.letters = []
+        self.__letters = []
+    
+    @property
+    def letters(self) -> list:
+        return self.__letters
     
     def addPawn(self,character) -> None:
         """
@@ -27,7 +31,7 @@ class Pawns():
         if not isinstance(character, str) or len(character) != 1:
             raise ValueError("The parameter must be a single character.")
         
-        self.letters.append(character)
+        self.__letters.append(character)
     
     def addPawns(self, character, repetitions) -> None:
         """
@@ -87,7 +91,7 @@ class Pawns():
         """
         frequencyTable = FrequencyTable()
         
-        for letter in self.letters:
+        for letter in self.__letters:
             frequencyTable.update(letter)
         
         return frequencyTable
@@ -110,7 +114,7 @@ class Pawns():
         Raises:
             ValueError: If the letters list is empty.
         """
-        random_pawn = random.choice(self.letters)
+        random_pawn = random.choice(self.__letters)
         self.takePawn(random_pawn)
         
         return random_pawn
@@ -123,7 +127,7 @@ class Pawns():
             character (str): character for remove the pawns bag
         """
         
-        self.letters.remove(character)
+        self.__letters.remove(character)
     
     def getTotalPawns(self) -> int:
         """
@@ -133,10 +137,10 @@ class Pawns():
             int: Total of pawns
         """
         
-        return len(self.letters)
+        return len(self.__letters)
     
     @staticmethod
-    def getPoinst(character) -> int:
+    def getPoints(character) -> int:
         """
         Returns the point value of a given letter.
         

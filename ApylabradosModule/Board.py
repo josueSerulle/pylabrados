@@ -10,48 +10,50 @@ import pandas as pd
 class Board:
 
     def __init__(self):
-        self.__board = [[" " for _ in range(15)] for _ in range(15)]
+        self.__boardLen = 15
+        self.__board = [[" " for _ in range(self.__boardLen)] for _ in range(self.__boardLen)]
         self.__totalWords = 0
         self.__totalPawns = 0
         self.__score = 0
+        self.__multiplier = [[(1, "") for _ in range(self.__boardLen)] for _ in range(self.__boardLen)]
 
     @property
-    def getBoard(self) -> list:
+    def board(self) -> list:
         return self.__board
     
     @property
-    def getBoardlen(self) -> int:
-        return len(self.__board)
+    def boardLen(self) -> int:
+        return  self.__boardLen
     
     @property
-    def getScore(self) -> int:
+    def score(self) -> int:
         return self.__score
     
     @property
-    def getTotalWords(self) -> int:
+    def totalWords(self) -> int:
         return self.__totalWords
     
-    def showBoard(self) -> None:
+    def showBoard(self, player_pawns_letter) -> None:
         """
         show the bard game with row and column coordinate
         """
 
-        xycolors = pd.read_csv( Path(__file__).parent / "DataSets/xycolor_board.csv")
+        xycolors = pd.read_csv(Path(__file__).parent / "DataSets/xycolor_board.csv")
         
         # create the plt figurte that will save to board
         figure = plt.figure(figsize= (10, 10))
         ax = figure.add_subplot(111)
 
         # draw the vertical and horizontal line
-        for x in range(self.getBoardlen + 1):
-            ax.plot([x, x], [0, self.getBoardlen], 'k')
+        for x in range(self.boardLen + 1):
+            ax.plot([x, x], [0, self.boardLen], 'k')
         
-        for y in range(self.getBoardlen + 1):
-            ax.plot([0, self.getBoardlen], [y, y], 'k')
+        for y in range(self.boardLen + 1):
+            ax.plot([0, self.boardLen], [y, y], 'k')
         
         # define the limits of the axes
-        ax.set_xlim(-1, self.getBoardlen + 1)
-        ax.set_ylim(-1, self.getBoardlen + 1)
+        ax.set_xlim(-1, self.boardLen + 1)
+        ax.set_ylim(-1, self.boardLen + 1)
         
         # scale so that grill occupies the entire figure
         ax.set_position((0, 0, 1, 1))    
@@ -61,29 +63,51 @@ class Board:
             polygon = Polygon(self.__generateVertex(row[1], row[2]), color = row[3])
             ax.add_artist(polygon)
 
-        for i in range (self.getBoardlen):
+        for i in range (self.boardLen):
             # draw the number in the board
             # top number
             ax.text(
-                self.__transformation(i + 0.5), self.__transformation(self.getBoardlen + 0.5), str(i), 
+                self.__transformation(i + 0.5), self.__transformation(self.boardLen + 0.5), str(i), 
                 verticalalignment = "center", horizontalalignment = "center", fontsize = 20, 
                 fontfamily = "fantasy", fontweight = "bold", transform = ax.transAxes
             )
 
             # right number
             ax.text(
-                self.__transformation(self.getBoardlen + 0.5), self.__transformation(i + 0.5), str(i), 
+                self.__transformation(self.boardLen + 0.5), self.__transformation(i + 0.5), str(i), 
                 verticalalignment = "center", horizontalalignment = "center", fontsize = 20, 
                 fontfamily = "fantasy", fontweight = "bold", transform = ax.transAxes
             )
         
             # draw the letters in the board
-            for j in range(self.getBoardlen):
+            for j in range(self.boardLen):
                 ax.text(
                     self.__transformation(j + 0.5), self.__transformation(14 - i + 0.5), 
                     self.__board[i][j], verticalalignment = "center", horizontalalignment = "center",
                     fontsize = 15, transform = ax.transAxes
                 )
+        
+        # display score in the screen
+        ax.text(
+            self.__transformation(0), self.__transformation(-0.5), 
+            "Score: {}".format(self.__score), verticalalignment = "center", horizontalalignment = "left",
+            fontsize = 25, fontfamily = "fantasy", fontweight = "bold", transform = ax.transAxes
+        )
+
+        pawns_position = 4
+        
+        for pawn in player_pawns_letter:
+            polygon = Polygon(self.__generateVertex(pawns_position, -0.6), color = "#FFF68F")
+            ax.add_artist(polygon)
+            
+            ax.text(
+                self.__transformation(pawns_position), self.__transformation(-0.6), 
+                pawn, verticalalignment = "center", horizontalalignment = "center",
+                fontsize = 15, fontfamily = "fantasy", fontweight = "bold", transform = ax.transAxes
+            )
+            
+            pawns_position += 1.5
+
         plt.show()
 
     def placeWord(self, player_pawns, word, x, y, direction) -> None:
@@ -97,12 +121,20 @@ class Board:
             direction (str): "V" if the word is on the y axis or "H" if the word is on the x axis
         """
 
+        word_points = 0
+        word_multiplier = 1
+        
         for letter in word.word:
             if letter != self.__board[x][y]:
                 player_pawns.takePawn(letter)
                 self.__totalPawns += 1
                 self.__board[x][y] = letter
-                self.__score += Pawns.getPoinst(letter)
+                
+                if self.__multiplier[x][y][1] != "w":
+                    word_points += Pawns.getPoints(letter) * self.__multiplier[x][y][0]
+                else:
+                    word_points += Pawns.getPoints(letter)
+                    word_multiplier *= self.__multiplier[x][y][0]
 
             if direction == "V":
                 x += 1
@@ -110,6 +142,7 @@ class Board:
                 y += 1
 
         self.__totalWords += 1
+        self.__score += word_points * word_multiplier
 
     def isPossible(self, word, x, y, direction) -> tuple:
         """
@@ -125,17 +158,17 @@ class Board:
             Tuple: (bool, str): is possible put the word and message
         """
 
+        validation = self.__firstPawnIsCentralPosition(word, x, y, direction)
+
+        if not validation[0]:
+            return validation
+        
         validation = self.__isWordGoOffBoard(word, x, y, direction)
         
         if not validation[0]:
             return validation
 
-        validation = self.__firstPawnIsCentralPosition(word, x, y, direction)
-
-        if not validation[0]:
-            return validation
-
-        validation = self.__placeWordsUsingExistingBoard(word)
+        validation = self.__placeWordsUsingExistingBoard(word, x, y, direction)
 
         if not validation[0]:
             return validation
@@ -193,8 +226,8 @@ class Board:
             word (Word): The word to place
         """
 
-        for x in range(self.getBoardlen):
-            for y in range(self.getBoardlen):
+        for x in range(self.boardLen):
+            for y in range(self.boardLen):
                 for direction in ["H", "V"]:
                     
                     if self.isPossible(word, x, y, direction)[0]:
@@ -203,6 +236,16 @@ class Board:
                         if FrequencyTable.isSubset(needPawns.getFrequency(), pawns.getFrequency()):
                             print("{}:".format("Verical" if direction == "V" else "Horizontal"))
                             print("(x = {}, y = {})".format(x, y))
+
+    def setMultiplier(self) -> None:
+        """
+        Setup multiplier in the game
+        """
+        
+        multpliers = pd.read_csv(Path(__file__).parent / "DataSets/multiplier_board.csv")
+        
+        for row in multpliers.itertuples():
+            self.__multiplier[row[1]][row[2]] = (row[3], row[4])
 
     def __firstPawnIsCentralPosition(self, word, x, y, direction) -> tuple:
         """
@@ -252,7 +295,7 @@ class Board:
         
         return (True, "")
     
-    def __placeWordsUsingExistingBoard(self, word) -> tuple:
+    def __placeWordsUsingExistingBoard(self, word, x, y, direction) -> tuple:
         """
         Validation of word using have a letter that exinsting in board
 
@@ -263,11 +306,19 @@ class Board:
             Tuple: (bool, str): validation result and message
         """
         if self.__totalWords > 0:
-            boardSet = set().union(*self.__board)
-            wordSet = set(word.word)
+            blank = 0
             
-            if not wordSet.intersection(boardSet):
-                return (False, "Todas las palabras, excepto la primera, deben utilizar una ficha ya existente en el tablero.")
+            for _ in word.word:
+                if self.__board[x][y] == " ":
+                    blank += 1
+                
+                if direction == "V":
+                    x += 1
+                else:
+                    y += 1
+            
+            if blank == word.getLengthWord():
+                return (False, "No se está utilizando ninguna ficha del tablero")
             
         return (True, "")
     

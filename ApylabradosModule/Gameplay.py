@@ -84,7 +84,6 @@ class Gameplay():
             self.introduceNewWord()
             return None
         elif option == "MP":
-            print("Estas son tus fichas:")
             self.__player_pawns.showPawns()
         elif option == "PP":
             Pawns.showPoints()
@@ -113,27 +112,27 @@ class Gameplay():
         
         print("\nQue deseas hacer? {}".format("" if self.__show_game_option else "(Introduce H para ver las diferentes opciones)"))
         
-        option = input("Opcion: ").upper()
+        optionGame = input("Opcion: ").upper()
         
-        if option == "H":
-            self._show_game_option = True
-        elif option == "EP":
+        if optionGame == "H":
+            self.__show_game_option = True
+        elif optionGame == "EP":
             self.introduceCoordinatesAndDirection()
             return None
-        elif option == "IW":
+        elif optionGame == "IW":
             self.introduceNewWord()
-        elif option == "MP":
-            print("Estas son tus fichas:")
+            return None
+        elif optionGame == "MP":
             self.__player_pawns.showPawns()
-        elif option == "PP":
+        elif optionGame == "PP":
             Pawns.showPoints()
-        elif option == "L":
+        elif optionGame == "L":
             self.legend()
-        elif option == "HW":
+        elif optionGame == "HW":
             self.helpWithWords()
-        elif option == "HP":
+        elif optionGame == "HP":
             self.helpWithPosition()
-        elif option == "Q":
+        elif optionGame == "Q":
             self.endGame()
             return None
         

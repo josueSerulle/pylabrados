@@ -1,6 +1,6 @@
 from pathlib import Path
-from .Word import Word
-from .FrequencyTable import FrequencyTable
+from ApylabradosModule import Word, FrequencyTable
+
 class Dictionary():
     filePath = Path(__file__).parent / "DataSets/dictionary.txt"
     

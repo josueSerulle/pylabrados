@@ -1,6 +1,8 @@
 import csv
 from numpy import random
-from .FrequencyTable import FrequencyTable
+from ApylabradosModule import FrequencyTable, Vertex
+from matplotlib.patches import Polygon
+import matplotlib.pyplot as plt
 
 class Pawns():
     
@@ -100,9 +102,34 @@ class Pawns():
         """
         Show the pawns that contained in the bag and the numbers of time each pawns is repeated
         """
+        pawns_position = 4
+        vertex = Vertex()
         
-        frequrncyTable = self.getFrequency()
-        frequrncyTable.showFrequency()
+        # create the plt figurte
+        figure = plt.figure(figsize= (8, 2))
+        ax = figure.add_subplot(111)
+        
+        # define the limits of the axes
+        ax.set_xlim(-1, 16)
+        ax.set_ylim(-1, 2)
+        
+        # scale so that grill occupies the entire figure
+        ax.set_position((0, 0, 1, 1))    
+        ax.set_axis_off()
+        
+        for pawn in self.__letters:
+            polygon = Polygon(vertex.generateVertex(pawns_position, 0.5), color = "#FFF68F")
+            ax.add_artist(polygon)
+            
+            ax.text(
+                vertex.transformation(pawns_position), 0.5, 
+                pawn, verticalalignment = "center", horizontalalignment = "center",
+                fontsize = 15, fontfamily = "fantasy", fontweight = "bold", transform = ax.transAxes
+            )
+            
+            pawns_position += 1.5
+        
+        plt.show()
     
     def takeRandomPawn(self) -> str:
         """
@@ -157,12 +184,34 @@ class Pawns():
         """
         Displays the points for each letter using the getPoints method.
         """
-        count = 0
-        end = " "
-        
-        print("Puntos de cada ficha: ")
+        data = [["Letra", "Puntos"]]
         
         for letter, point in Pawns.points.items():
-            print("{}:{}{}".format(letter, " " if point < 9 else "", point), end= end)
-            count += 1
-            end = "\n" if count % 3 == 2 else " "
+            data.append([letter, str(point)])
+        
+        #create figure and axis
+        figure, ax = plt.subplots(figsize= (10, 8))
+        
+        plt.text(0.5, 1.05, "Puntos de cada ficha: ", ha= "center", va= "bottom", fontsize= 14, fontweight= "bold")
+        
+        #create a table and add the graphic
+        table = ax.table(cellText= data, loc= "center", colWidths= [0.2, 0.2])
+        
+        # customize the table
+        table.auto_set_font_size(False)
+        table.set_fontsize(12)
+        table.scale(1, 1.5)
+        
+        #customize the color of header cell
+        for (i, j), cell in table.get_celld().items():
+
+            if i == 0:  # Cabeceras
+                cell.set_fontsize(14)
+                cell.set_text_props(weight='bold')
+                cell.set_facecolor('#f1f1f1')
+                if j == 1:
+                    break
+
+        ax.axis('off')
+        
+        plt.show()

@@ -1,4 +1,4 @@
-from .FrequencyTable import FrequencyTable
+from ApylabradosModule import FrequencyTable
 
 class Word():
     def __init__(self):

@@ -2,6 +2,7 @@ Para continuar, introduce EP
 Para cambiar la palabra, introdue IW
 Para conultar tus fichas, introduce MP
 Para consultar los puntos de cada ficha, introduce PP
+Para consultar los multiplicadores, introduce L
 Para obtener ayuda con las posibles palabras a forma con tus fichas, introduce HW
 Para obtener ayuda con las posibles posiciones para la palabras, introduce HP
 Para salir del juego, introduce Q

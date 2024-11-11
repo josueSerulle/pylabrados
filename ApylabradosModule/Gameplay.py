@@ -1,11 +1,9 @@
 from pathlib import Path
-from .Pawns import Pawns
-from .Board import Board
-from .Dictionary import Dictionary
-from .Word import Word
-from .FrequencyTable import FrequencyTable
+from ApylabradosModule import Board, Dictionary, FrequencyTable, Pawns, Vertex, Word
+from matplotlib.patches import Polygon
+import matplotlib.pyplot as plt
 
-class Gameplay:
+class Gameplay():
     
     def __init__(self) -> None:
         self.__word = None
@@ -90,6 +88,8 @@ class Gameplay:
             self.__player_pawns.showPawns()
         elif option == "PP":
             Pawns.showPoints()
+        elif option == "L":
+            self.legend()
         elif option == "HW":
             self.helpWithWords()
         elif option == "Q":
@@ -127,6 +127,8 @@ class Gameplay:
             self.__player_pawns.showPawns()
         elif option == "PP":
             Pawns.showPoints()
+        elif option == "L":
+            self.legend()
         elif option == "HW":
             self.helpWithWords()
         elif option == "HP":
@@ -252,7 +254,36 @@ class Gameplay:
         
         print("Las fichas de que dispones no son suficientes")
         self.showGameOption()
-    
+
+    def legend(self) -> None:
+        vertex = Vertex()
+        colors = ["#FFCCCC", "#B2FFCD", "#CCCEFF", "#CCF9FF"]
+        texts = ["x3\nPalabra", "x2\nPalabra", "x3\nLetra", "x2\nLetra"]
+
+        # create the plt figurte that will save to board
+        figure = plt.figure(figsize= (10, 2))
+        ax = figure.add_subplot(111)
+        
+        # define the limits of the axes
+        ax.set_xlim(-1, 16)
+        ax.set_ylim(-1, 2)
+        
+        # scale so that grill occupies the entire figure
+        ax.set_position((0, 0, 1, 1))    
+        ax.set_axis_off()
+        
+        for i in range(4):
+            polygon = Polygon(vertex.generateVertex(1.5 + 4 * i, 0.5), color= colors[i])
+            ax.add_artist(polygon)
+            
+            ax.text(
+                vertex.transformationX(3.5 + 4 * i), vertex.transformationY(0.5), texts[i],
+                verticalalignment = "center", horizontalalignment = "center",fontsize = 25, 
+                fontfamily = "fantasy", fontweight = "bold", transform = ax.transAxes
+            )
+
+        plt.show()
+
     def endGame(self):
         """
         Finish current game

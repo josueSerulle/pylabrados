@@ -1,13 +1,17 @@
 class FrequencyTable():
     def __init__(self):
-        self.frequencies = {chr(i):0 for i in range(ord("A"), ord("Z") + 1)}
+        self.__frequencies = {chr(i):0 for i in range(ord("A"), ord("Z") + 1)}
+    
+    @property
+    def frequencies(self) -> dict:
+        return self.__frequencies
     
     def showFrequency(self) -> None:
         """
         show the frequency when the element is different to 0
         """
         
-        for character, frequency in self.frequencies.items():
+        for character, frequency in self.__frequencies.items():
             if frequency != 0:
                 print(f"{character}: {frequency}")
     
@@ -18,7 +22,7 @@ class FrequencyTable():
         Args:
             character(str): The to be updated
         """
-        self.frequencies[character.upper()] += 1
+        self.__frequencies[character.upper()] += 1
     
     def delete(self, character) -> None:
         """
@@ -27,7 +31,7 @@ class FrequencyTable():
         Args:
             character(str): The to be updated
         """
-        self.frequencies[character.upper()] -= 1
+        self.__frequencies[character.upper()] -= 1
         
     @staticmethod
     def isSubset(freq_table1, freq_table2) -> bool:

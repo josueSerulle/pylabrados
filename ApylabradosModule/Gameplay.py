@@ -1,34 +1,33 @@
 from pathlib import Path
-from .Pawns import Pawns
-from .Board import Board
-from .Dictionary import Dictionary
-from .Word import Word
-from .FrequencyTable import FrequencyTable
+from ApylabradosModule import Board, Dictionary, FrequencyTable, Pawns, Vertex, Word
+from matplotlib.patches import Polygon
+import matplotlib.pyplot as plt
 
-class Gameplay:
+class Gameplay():
     
     def __init__(self) -> None:
-        self._word = None
-        self._end = False
-        self._show_menu = True
-        self._show_game_option = True
-        self._player_pawns = Pawns()
-        self._bag_of_pawns = Pawns()
-        self._board = Board()
+        self.__word = None
+        self.__end = False
+        self.__show_menu = True
+        self.__show_game_option = True
+        self.__player_pawns = Pawns()
+        self.__bag_of_pawns = Pawns()
+        self.__board = Board()
         
-        self._bag_of_pawns.createBag(Path(__file__).parent / "DataSets/bag_of_pawns.csv")
+        self.__bag_of_pawns.createBag(Path(__file__).parent / "DataSets/bag_of_pawns.csv")
+        self.__board.setMultiplier()
     
     @property
-    def getEnd(self) -> bool:
-        return self._end
+    def end(self) -> bool:
+        return self.__end
     
     @property
-    def getBagOfPawns(self) -> Pawns:
-        return self._bag_of_pawns
+    def bagOfPawns(self) -> Pawns:
+        return self.__bag_of_pawns
     
     @property
-    def getBoard(self) -> Board:
-        return self._board
+    def board(self) -> Board:
+        return self.__board
     
     def startGame(self) -> None:
         self.welcome()
@@ -57,12 +56,11 @@ class Gameplay:
         Deal pawns to the player until the 7
         """
         
-        while(self._player_pawns.getTotalPawns() < 7):
-            self._player_pawns.addPawn(self._bag_of_pawns.takeRandomPawn())
+        while(self.__player_pawns.getTotalPawns() < 7):
+            self.__player_pawns.addPawn(self.__bag_of_pawns.takeRandomPawn())
         
-        print("Estas son tus fichas:")
-        self._player_pawns.showPawns()
-        
+        self.__board.showBoard(self.__player_pawns.letters)
+
     def showMenu(self) -> None:
         """
         Displays Menu options
@@ -70,28 +68,27 @@ class Gameplay:
         
         filePath = Path(__file__).parent / "DataSets/menu.txt"
         
-        if self._show_menu:
+        if self.__show_menu:
             with open(filePath) as file:
                 print(file.read())
 
-            self._show_menu = False
+            self.__show_menu = False
         
-        print("\nQue deseas hacer? {}".format("" if self._show_menu else "(Introduce H para ver las diferentes opciones)"))
+        print("\nQue deseas hacer? {}".format("" if self.__show_menu else "(Introduce H para ver las diferentes opciones)"))
         
         option = input("Opcion: ").upper()
         
         if option == "H":
-            self._show_menu = True
+            self.__show_menu = True
         elif option == "IW":
             self.introduceNewWord()
             return None
         elif option == "MP":
-            print("Estas son tus fichas:")
-            self._player_pawns.showPawns()
-        elif option == "S":
-            print("Puntos: {}".format(self._board.score))
+            self.__player_pawns.showPawns()
         elif option == "PP":
             Pawns.showPoints()
+        elif option == "L":
+            self.legend()
         elif option == "HW":
             self.helpWithWords()
         elif option == "Q":
@@ -107,35 +104,35 @@ class Gameplay:
         
         filePath = Path(__file__).parent / "DataSets/game_options.txt"
         
-        if self._show_game_option:
+        if self.__show_game_option:
             with open(filePath) as file:
                 print(file.read())
 
-            self._show_game_option = False
+            self.__show_game_option = False
         
-        print("\nQue deseas hacer? {}".format("" if self._show_game_option else "(Introduce H para ver las diferentes opciones)"))
+        print("\nQue deseas hacer? {}".format("" if self.__show_game_option else "(Introduce H para ver las diferentes opciones)"))
         
-        option = input("Opcion: ").upper()
+        optionGame = input("Opcion: ").upper()
         
-        if option == "H":
-            self._show_game_option = True
-        elif option == "EP":
+        if optionGame == "H":
+            self.__show_game_option = True
+        elif optionGame == "EP":
             self.introduceCoordinatesAndDirection()
             return None
-        elif option == "IW":
+        elif optionGame == "IW":
             self.introduceNewWord()
-        elif option == "MP":
-            print("Estas son tus fichas:")
-            self._player_pawns.showPawns()
-        elif option == "S":
-            print("Puntos: {}".format(self._board.score))
-        elif option == "PP":
+            return None
+        elif optionGame == "MP":
+            self.__player_pawns.showPawns()
+        elif optionGame == "PP":
             Pawns.showPoints()
-        elif option == "HW":
+        elif optionGame == "L":
+            self.legend()
+        elif optionGame == "HW":
             self.helpWithWords()
-        elif option == "HP":
+        elif optionGame == "HP":
             self.helpWithPosition()
-        elif option == "Q":
+        elif optionGame == "Q":
             self.endGame()
             return None
         
@@ -149,18 +146,18 @@ class Gameplay:
         
         print("Estas son las posibles palabras a formar:")
         
-        if self._board.totalWords == 0:
-            Dictionary.showWords(self._player_pawns)
+        if self.__board.totalWords == 0:
+            Dictionary.showWords(self.__player_pawns)
             return None
         
-        board_len = len(self._board.board)
+        board_len = self.__board.boardLen
         board_letters = []
         
         for x in range(board_len):
             for y in range(board_len):
-                if self._board.board[x][y] != " " and  self._board.board[x][y] not in board_letters:
-                    board_letters.append(self._board.board[x][y])
-                    Dictionary.showWordPlus(self._player_pawns, self._board.board[x][y])
+                if self.__board.board[x][y] != " " and  self.__board.board[x][y] not in board_letters:
+                    board_letters.append(self.__board.board[x][y])
+                    Dictionary.showWordPlus(self.__player_pawns, self.__board.board[x][y])
     
     def helpWithPosition(self) -> None:
         """
@@ -168,7 +165,7 @@ class Gameplay:
         """
         
         print("Estas son las posibles colocaciones")
-        self._board.showWordPlacement(self._player_pawns,self._word)
+        self.__board.showWordPlacement(self.__player_pawns,self.__word)
         
     def introduceNewWord(self) -> None:
         """
@@ -176,29 +173,29 @@ class Gameplay:
         and that it can be formed with the pawns available to the player and those placed on the board.
         """
 
-        self._word = Word.readWord()
-        word_ft = self._word.getFrequency()
-        player_pawns_ft = self._player_pawns.getFrequency()
-        isInDictionary = Dictionary.validationWord(self._word)
+        self.__word = Word.readWord()
+        word_ft = self.__word.getFrequency()
+        player_pawns_ft = self.__player_pawns.getFrequency()
+        isInDictionary = Dictionary.validationWord(self.__word)
         wordIsSubset = True
         
-        if self._board.totalWords == 0:
+        if self.__board.board == 0:
             wordIsSubset = FrequencyTable.isSubset(word_ft, player_pawns_ft)
         else:
-            board_len = len(self._board.board)
+            board_len = self.__board.boardLen
             board_letters = []
             flag = False
             
             for x in range(board_len):
                 for y in range(board_len):
                     
-                    if self._board.board[x][y] != " " and self._board.board[x][y] not in board_letters:
-                        board_letters.append(self._board.board[x][y])
+                    if self.__board.board[x][y] != " " and self.__board.board[x][y] not in board_letters:
+                        board_letters.append(self.__board.board[x][y])
                         player_pawns = player_pawns_ft
-                        player_pawns.update(self._board.board[x][y])
+                        player_pawns.update(self.__board.board[x][y])
                         
                         wordIsSubset = FrequencyTable.isSubset(word_ft, player_pawns)
-                        player_pawns.delete(self._board.board[x][y])
+                        player_pawns.delete(self.__board.board[x][y])
                         
                         if wordIsSubset:
                             flag = True
@@ -241,28 +238,55 @@ class Gameplay:
             self.introduceCoordinatesAndDirection()
             return None
 
-        possible, message = self._board.isPossible(self._word, x, y, direction)
+        possible, message = self.__board.isPossible(self.__word, x, y, direction)
         
         if not possible:
             print(message)
             self.showGameOption()
             return None
         
-        needed_pawns = self._board.getPawns(self._word, x, y, direction)
+        needed_pawns = self.__board.getPawns(self.__word, x, y, direction)
         
-        if FrequencyTable.isSubset(needed_pawns.getFrequency(), self._player_pawns.getFrequency()):
-            self._board.placeWord(self._player_pawns, self._word, x, y, direction)
-            self._board.showBoard()
-            print("\nPuntos: {}\n".format(self._board.score))
+        if FrequencyTable.isSubset(needed_pawns.getFrequency(), self.__player_pawns.getFrequency()):
+            self.__board.placeWord(self.__player_pawns, self.__word, x, y, direction)
             return None
         
         print("Las fichas de que dispones no son suficientes")
         self.showGameOption()
-    
+
+    def legend(self) -> None:
+        vertex = Vertex()
+        colors = ["#FFCCCC", "#B2FFCD", "#CCCEFF", "#CCF9FF"]
+        texts = ["x3\nPalabra", "x2\nPalabra", "x3\nLetra", "x2\nLetra"]
+
+        # create the plt figurte that will save to board
+        figure = plt.figure(figsize= (10, 2))
+        ax = figure.add_subplot(111)
+        
+        # define the limits of the axes
+        ax.set_xlim(-1, 16)
+        ax.set_ylim(-1, 2)
+        
+        # scale so that grill occupies the entire figure
+        ax.set_position((0, 0, 1, 1))    
+        ax.set_axis_off()
+        
+        for i in range(4):
+            polygon = Polygon(vertex.generateVertex(1.5 + 4 * i, 0.5), color= colors[i])
+            ax.add_artist(polygon)
+            
+            ax.text(
+                vertex.transformationX(3.5 + 4 * i), vertex.transformationY(0.5), texts[i],
+                verticalalignment = "center", horizontalalignment = "center",fontsize = 25, 
+                fontfamily = "fantasy", fontweight = "bold", transform = ax.transAxes
+            )
+
+        plt.show()
+
     def endGame(self):
         """
         Finish current game
         """
         
         print("Fin del juego")
-        self._end = True
+        self.__end = True

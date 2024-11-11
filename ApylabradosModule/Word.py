@@ -1,9 +1,17 @@
-from .FrequencyTable import FrequencyTable
+from ApylabradosModule import FrequencyTable
 
 class Word():
     def __init__(self):
-        self.word = []
+        self.__word = []
     
+    @property
+    def word(self) -> list:
+        return self.__word
+    
+    @word.setter
+    def word(self, word) -> None:
+        self.__word = word
+        
     def areEqual(self, w) -> bool:
         """
         returns True if they are equal
@@ -18,7 +26,7 @@ class Word():
             bool: if equal or not
         """
         if isinstance(w, Word):
-            return self.word == w.word
+            return self.__word == w.word
         
         raise TypeError("the parameter must be an object of the word class")
     
@@ -30,7 +38,7 @@ class Word():
             bool: if empty or not
         """
         
-        return len(self.word) == 0
+        return len(self.__word) == 0
     
     def getFrequency(self) -> FrequencyTable:
         """
@@ -41,7 +49,7 @@ class Word():
         """
         frequencyTable = FrequencyTable()
         
-        for word in self.word:
+        for word in self.__word:
             frequencyTable.update(word)
         
         return frequencyTable
@@ -54,7 +62,7 @@ class Word():
             int: length of word
         """
         
-        return len(self.word)
+        return len(self.__word)
 
     @classmethod
     def readWord(cls) -> 'Word':
@@ -84,4 +92,4 @@ class Word():
         return w
         
     def __str__(self):
-        return "".join(self.word)
+        return "".join(self.__word)

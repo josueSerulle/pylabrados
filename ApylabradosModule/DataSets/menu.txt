@@ -1,6 +1,6 @@
 Para continuar, introduce IW
 Para conultar tus fichas, introduce MP
-Para consutlar tus puntos actuales, introduce S
 Para consultar los puntos de cada ficha, introduce PP
+Para consultar los multiplicadores, introduce L
 Para obtener ayuda con las posibles palabras a forma con tus fichas, introduce HW
 Para salir del juego, introduce Q

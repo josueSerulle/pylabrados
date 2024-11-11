@@ -5,15 +5,15 @@ def main():
   
   gameplay.startGame()
   
-  while not gameplay.getEnd and gameplay.getBagOfPawns.getTotalPawns() > 0:
+  while not gameplay.end and gameplay.bagOfPawns.getTotalPawns() > 0:
     gameplay.dealPawns()
     gameplay.showMenu()
   
-  if gameplay.getBagOfPawns.getTotalPawns() <= 0:
+  if gameplay.bagOfPawns.getTotalPawns() <= 0:
     print("¡Te has quedado sin fichas en la bolsa!")
     print("Fin del juego")
 
-  print("¡Enhorabuena! Has conseguido {} puntos en esta partida".format(gameplay.getBoard.score))
+  print("¡Enhorabuena! Has conseguido {} puntos en esta partida".format(gameplay.board.score))
 
 if __name__ == "__main__":
   main()

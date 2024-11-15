@@ -1,7 +1,7 @@
 from pathlib import Path
 from ApylabradosModule import Word, FrequencyTable
 
-class Dictionary():
+class Dictionary:
     filePath = Path(__file__).parent / "DataSets/dictionary.txt"
     
     @staticmethod
@@ -22,7 +22,7 @@ class Dictionary():
             with open(Dictionary.filePath) as file:
                 w = Word.readWordFromFile(file)
                 
-                while (not w.isEmpty() and not word.areEqual(w)):
+                while not w.isEmpty() and not word.areEqual(w):
                     w = Word.readWordFromFile(file)
             
             if w.isEmpty() and not word.areEqual(w):
@@ -50,7 +50,7 @@ class Dictionary():
         with open(Dictionary.filePath) as file:
             word = Word.readWordFromFile(file)
             
-            while (not word.isEmpty()):
+            while not word.isEmpty():
                 n = word.getLengthWord()
                 wordFrequency = word.getFrequency()
                 
@@ -80,7 +80,7 @@ class Dictionary():
         with open(Dictionary.filePath) as file:
             word = Word.readWordFromFile(file)
             
-            while (not word.isEmpty()):
+            while not word.isEmpty():
                 n = word.getLengthWord()
                 
                 if character in word.word:

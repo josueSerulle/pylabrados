@@ -1,4 +1,4 @@
-class FrequencyTable():
+class FrequencyTable:
     def __init__(self):
         self.__frequencies = {chr(i):0 for i in range(ord("A"), ord("Z") + 1)}
     
@@ -17,7 +17,7 @@ class FrequencyTable():
     
     def update(self, character) -> None:
         """
-        Update the frequency of chracter
+        Update the frequency of character
         
         Args:
             character(str): The to be updated
@@ -26,7 +26,7 @@ class FrequencyTable():
     
     def delete(self, character) -> None:
         """
-        delete the frequency of chracter
+        delete the frequency of character
         
         Args:
             character(str): The to be updated

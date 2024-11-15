@@ -4,7 +4,7 @@ from matplotlib.patches import Polygon
 import matplotlib.pyplot as plt
 import pandas as pd
 
-class Board():
+class Board:
 
     def __init__(self):
         self.__boardLen = 15
@@ -35,10 +35,9 @@ class Board():
         show the bard game with row and column coordinate
         """
 
-        vertex = Vertex()
-        xycolors = pd.read_csv(Path(__file__).parent / "DataSets/xycolor_board.csv")
+        xy_colors = pd.read_csv(Path(__file__).parent / "DataSets/xycolor_board.csv")
         
-        # create the plt figurte that will save to board
+        # create the plt figure that will save to board
         figure = plt.figure(figsize= (10, 10))
         ax = figure.add_subplot(111)
 
@@ -57,22 +56,22 @@ class Board():
         ax.set_position((0, 0, 1, 1))    
         ax.set_axis_off()
 
-        for row in xycolors.itertuples():
-            polygon = Polygon(vertex.generateVertex(row[1], row[2]), color = row[3])
+        for row in xy_colors.itertuples():
+            polygon = Polygon(Vertex.generateVertex(row[1], row[2]), color = row[3])
             ax.add_artist(polygon)
 
         for i in range (self.boardLen):
             # draw the number in the board
             # top number
             ax.text(
-                vertex.transformation(i + 0.5), vertex.transformation(self.boardLen + 0.5), str(i), 
+                Vertex.transformation(i + 0.5), Vertex.transformation(self.boardLen + 0.5), str(i),
                 verticalalignment = "center", horizontalalignment = "center", fontsize = 20, 
                 fontfamily = "fantasy", fontweight = "bold", transform = ax.transAxes
             )
 
             # right number
             ax.text(
-                vertex.transformation(self.boardLen + 0.5), vertex.transformation(i + 0.5), str(i), 
+                Vertex.transformation(self.boardLen + 0.5), Vertex.transformation(i + 0.5), str(14 - i),
                 verticalalignment = "center", horizontalalignment = "center", fontsize = 20, 
                 fontfamily = "fantasy", fontweight = "bold", transform = ax.transAxes
             )
@@ -80,14 +79,14 @@ class Board():
             # draw the letters in the board
             for j in range(self.boardLen):
                 ax.text(
-                    vertex.transformation(j + 0.5), vertex.transformation(14 - i + 0.5), 
+                    Vertex.transformation(j + 0.5), Vertex.transformation(14 - i + 0.5),
                     self.__board[i][j], verticalalignment = "center", horizontalalignment = "center",
                     fontsize = 15, transform = ax.transAxes
                 )
         
         # display score in the screen
         ax.text(
-            vertex.transformation(0), vertex.transformation(-0.5), 
+            Vertex.transformation(0), Vertex.transformation(-0.5),
             "Score: {}".format(self.__score), verticalalignment = "center", horizontalalignment = "left",
             fontsize = 25, fontfamily = "fantasy", fontweight = "bold", transform = ax.transAxes
         )
@@ -95,11 +94,11 @@ class Board():
         pawns_position = 4
         
         for pawn in player_pawns_letter:
-            polygon = Polygon(vertex.generateVertex(pawns_position, -0.6), color = "#FFF68F")
+            polygon = Polygon(Vertex.generateVertex(pawns_position, -0.6), color = "#FFF68F")
             ax.add_artist(polygon)
             
             ax.text(
-                vertex.transformation(pawns_position), vertex.transformation(-0.6), 
+                Vertex.transformation(pawns_position), Vertex.transformation(-0.6),
                 pawn, verticalalignment = "center", horizontalalignment = "center",
                 fontsize = 15, fontfamily = "fantasy", fontweight = "bold", transform = ax.transAxes
             )
@@ -114,9 +113,9 @@ class Board():
         Args:
             player_pawns (Pawns): player's pawns bag
             word (Word): create word
-            x (int): coordinates on the x axis
-            y (int): coordinate on the y axis
-            direction (str): "V" if the word is on the y axis or "H" if the word is on the x axis
+            x (int): coordinates on the x-axis
+            y (int): coordinate on the y-axis
+            direction (str): "V" if the word is on the y-axis or "H" if the word is on the x-axis
         """
 
         word_points = 0
@@ -148,9 +147,9 @@ class Board():
 
         Args:
             word (Word): word object for validation
-            x (int): coordinates on the x axis
-            y (int): coordinates on the y axis
-            direction (str): "V" if the word is on the y axis or "H" if the word is on the x axis
+            x (int): coordinates on the x-axis
+            y (int): coordinates on the y-axis
+            direction (str): "V" if the word is on the y-axis or "H" if the word is on the x-axis
 
         returns:
             Tuple: (bool, str): is possible put the word and message
@@ -176,12 +175,12 @@ class Board():
         if not validation[0]:
             return validation
         
-        validation = self.__isPawnInitalInSartOrFinalOtherPawns(x, y, direction)
+        validation = self.__isPawnInitialInStartOrFinalOtherPawns(x, y, direction)
 
         if not validation[0]:
             return validation
 
-        return (True, "")
+        return True, ""
 
     def getPawns(self, word, x, y, direction) -> Word:
         """
@@ -189,9 +188,9 @@ class Board():
 
         Args:
             word (Word): word object for validation
-            x (int): coordinates on the x axis
-            y (int): coordinates on the y axis
-            direction (str): "V" if the word is on the y axis or "H" if the word is on the x axis
+            x (int): coordinates on the x-axis
+            y (int): coordinates on the y-axis
+            direction (str): "V" if the word is on the y-axis or "H" if the word is on the x-axis
 
         returns:
             Word: is possible put the word and message
@@ -240,9 +239,9 @@ class Board():
         Setup multiplier in the game
         """
         
-        multpliers = pd.read_csv(Path(__file__).parent / "DataSets/multiplier_board.csv")
+        multipliers = pd.read_csv(Path(__file__).parent / "DataSets/multiplier_board.csv")
         
-        for row in multpliers.itertuples():
+        for row in multipliers.itertuples():
             self.__multiplier[row[1]][row[2]] = (row[3], row[4])
 
     def __firstPawnIsCentralPosition(self, word, x, y, direction) -> tuple:
@@ -251,9 +250,9 @@ class Board():
 
         Args:
             word (Word): word object for validation
-            x (int): coordinates on the x axis
-            y (int): coordinates on the y axis
-            direction (str): "V" if the word is on the y axis or "H" if the word is on the x axis
+            x (int): coordinates on the x-axis
+            y (int): coordinates on the y-axis
+            direction (str): "V" if the word is on the y-axis or "H" if the word is on the x-axis
 
         Returns:
             Tuple: (bool, str): validation result and message
@@ -263,14 +262,14 @@ class Board():
             if direction == "V" and not (
                 x == 7 and 7 in range(y, y + word.getLengthWord() - 1)
             ):
-                return (False, "La primera palabra debe pasar por la casilla central (7,7).")
+                return False, "La primera palabra debe pasar por la casilla central (7,7)."
 
             elif direction == "H" and not (
                 y == 7 and 7 in range(x, x + word.getLengthWord() - 1)
             ):
-                return (False, "La primera palabra debe pasar por la casilla central (7,7).")
+                return False, "La primera palabra debe pasar por la casilla central (7,7)."
 
-        return (True, "")
+        return True, ""
     
     def __isWordGoOffBoard(self, word, x, y, direction) -> tuple:
         """
@@ -278,24 +277,24 @@ class Board():
 
         Args:
             word (Word): word object for validation
-            x (int): coordinates on the x axis
-            y (int): coordinates on the y axis
-            direction (str): "V" if the word is on the y axis or "H" if the word is on the x axis
+            x (int): coordinates on the x-axis
+            y (int): coordinates on the y-axis
+            direction (str): "V" if the word is on the y-axis or "H" if the word is on the x-axis
 
         Returns:
             Tuple: (bool, str): validation result and message
         """
 
-        if direction == "H" and (x < 0 or y < 0 or (y + word.getLengthWord() - 1) >= 15):
-            return (False, "La palabra sobrepasa el límite horizontal del tablero.")
-        elif direction == "V" and (x < 0 or y < 0 or (x + word.getLengthWord() - 1) >= 15):
-            return (False, "La palabra sobrepasa el límite vertical del tablero.")
+        if direction == "H" and (x < 0 or y < 0 or (y + word.getLengthWord() - 1) >= self.boardLen):
+            return False, "La palabra sobrepasa el límite horizontal del tablero."
+        elif direction == "V" and (x < 0 or y < 0 or (x + word.getLengthWord() - 1) >= self.boardLen):
+            return False, "La palabra sobrepasa el límite vertical del tablero."
         
-        return (True, "")
+        return True, ""
     
     def __placeWordsUsingExistingBoard(self, word, x, y, direction) -> tuple:
         """
-        Validation of word using have a letter that exinsting in board
+        Validation of word using have a letter that existing in board
 
         Args:
             word (Word): word object for validation
@@ -316,9 +315,9 @@ class Board():
                     y += 1
             
             if blank == word.getLengthWord():
-                return (False, "No se está utilizando ninguna ficha del tablero")
+                return False, "No se está utilizando ninguna ficha del tablero"
             
-        return (True, "")
+        return True, ""
     
     def __putCorrectPawn(self, word, x, y, direction) -> tuple: 
         """
@@ -326,9 +325,9 @@ class Board():
 
         Args:
             word (Word): word object for validation
-            x (int): coordinates on the x axis
-            y (int): coordinates on the y axis
-            direction (str): "V" if the word is on the y axis or "H" if the word is on the x axis
+            x (int): coordinates on the x-axis
+            y (int): coordinates on the y-axis
+            direction (str): "V" if the word is on the y-axis or "H" if the word is on the x-axis
 
         Returns:
             Tuple: (bool, str): validation result and message
@@ -338,7 +337,7 @@ class Board():
             
             for letter in word.word:
                 if self.__board[x][y] != " " and letter != self.__board[x][y]:
-                    return (False, "No se puede colocar una ficha en una casilla que ya esté ocupada por un ficha diferente.")
+                    return False, "No se puede colocar una ficha en una casilla que ya esté ocupada por un ficha diferente."
                 elif self.__board[x][y] == " ":
                     hasNewPawn = True
                     
@@ -348,26 +347,26 @@ class Board():
                     y += 1
             
             if not hasNewPawn:
-                return (False, "Se debe colocar al menos una ficha nuevo en el tablero.")
+                return False, "Se debe colocar al menos una ficha nuevo en el tablero."
             
-        return (True, "")
+        return True, ""
     
-    def __isPawnInitalInSartOrFinalOtherPawns(self, x, y, direction) -> tuple:
+    def __isPawnInitialInStartOrFinalOtherPawns(self, x, y, direction) -> tuple:
         """
         Validation of new pawn initial in start or final other word in board
 
         Args:
-            x (int): coordinates on the x axis
-            y (int): coordinates on the y axis
-            direction (str): "V" if the word is on the y axis or "H" if the word is on the x axis
+            x (int): coordinates on the x-axis
+            y (int): coordinates on the y-axis
+            direction (str): "V" if the word is on the y-axis or "H" if the word is on the x-axis
 
         Returns:
             Tuple: (bool, str): validation result and message
         """
         if self.__totalWords > 0:
             if direction == "V" and (x != 0 and self.__board[x - 1][y] != " "):
-                return (False, "Hay fichas adicionales al principio o al final de una palabra.")
-            elif (x != 0 and self.__board[x][y  - 1] != " "):
-                return (False, "Hay fichas adicionales al principio o al final de una palabra.")
+                return False, "Hay fichas adicionales al principio o al final de una palabra."
+            elif x != 0 and self.__board[x][y - 1] != " ":
+                return False, "Hay fichas adicionales al principio o al final de una palabra."
             
-        return (True, "")
+        return True, ""

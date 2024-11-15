@@ -4,7 +4,7 @@ from ApylabradosModule import FrequencyTable, Vertex
 from matplotlib.patches import Polygon
 import matplotlib.pyplot as plt
 
-class Pawns():
+class Pawns:
     
     points = {
         'A': 1, 'B': 3, 'C': 3, 'D': 2, 'E': 1, 'F': 4, 'G': 2, 'H': 4, 'I': 1, 'J': 8, 'K': 5, 'L': 1, 
@@ -56,10 +56,10 @@ class Pawns():
     
     def createBag(self, csv_path) -> None:
         """
-        Createss the bag of pawns from csv file.
+        Creates the bag of pawns from csv file.
         
         Args:
-            csv_path (str): Path to the csv file containing pawn data
+            csv_path (path): Path to the csv file containing pawn data
 
         Raises:
             FileNotFoundError: Error to open csv file failed.
@@ -76,9 +76,9 @@ class Pawns():
                     if len(row) != 2:
                         raise ValueError("CSV file format is incorrect. Each row should have exactly two columns.")
                     
-                    chracter, repetitions = row
+                    character, repetitions = row
                     
-                    self.addPawns(chracter, int(repetitions))
+                    self.addPawns(character, int(repetitions))
         except FileNotFoundError:
             print(f"Error: the file {csv_path} was not found.")
         except ValueError as ex:
@@ -103,9 +103,8 @@ class Pawns():
         Show the pawns that contained in the bag and the numbers of time each pawns is repeated
         """
         pawns_position = 4
-        vertex = Vertex()
         
-        # create the plt figurte
+        # create the plt figure
         figure = plt.figure(figsize= (8, 2))
         ax = figure.add_subplot(111)
         
@@ -118,11 +117,11 @@ class Pawns():
         ax.set_axis_off()
         
         for pawn in self.__letters:
-            polygon = Polygon(vertex.generateVertex(pawns_position, 0.5), color = "#FFF68F")
+            polygon = Polygon(Vertex.generateVertex(pawns_position, 0.5), color = "#FFF68F")
             ax.add_artist(polygon)
             
             ax.text(
-                vertex.transformation(pawns_position), 0.5, 
+                Vertex.transformation(pawns_position), 0.5,
                 pawn, verticalalignment = "center", horizontalalignment = "center",
                 fontsize = 15, fontfamily = "fantasy", fontweight = "bold", transform = ax.transAxes
             )
@@ -205,7 +204,7 @@ class Pawns():
         #customize the color of header cell
         for (i, j), cell in table.get_celld().items():
 
-            if i == 0:  # Cabeceras
+            if i == 0:  # Headers
                 cell.set_fontsize(14)
                 cell.set_text_props(weight='bold')
                 cell.set_facecolor('#f1f1f1')

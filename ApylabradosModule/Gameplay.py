@@ -3,9 +3,9 @@ from ApylabradosModule import Board, Dictionary, FrequencyTable, Pawns, Vertex, 
 from matplotlib.patches import Polygon
 import matplotlib.pyplot as plt
 
-class Gameplay():
+class Gameplay:
     
-    def __init__(self) -> None:
+    def __init__(self):
         self.__word = None
         self.__end = False
         self.__show_menu = True
@@ -32,31 +32,13 @@ class Gameplay():
     def startGame(self) -> None:
         self.welcome()
         self.instructions()
-    
-    def welcome(self) -> None:
-        """
-        Display welcome message 
-        """
-        
-        filePath = Path(__file__).parent / "DataSets/welcome_message.txt"
-        with open(filePath) as file:
-            print(file.read())
-    
-    def instructions(self) -> None:
-        """
-        Display the game instructions
-        """
-        
-        filePath = Path(__file__).parent / "DataSets/instructions.txt"
-        with open(filePath) as file:
-            print(file.read())
-    
+
     def dealPawns(self) -> None:
         """
         Deal pawns to the player until the 7
         """
         
-        while(self.__player_pawns.getTotalPawns() < 7):
+        while self.__player_pawns.getTotalPawns() < 7:
             self.__player_pawns.addPawn(self.__bag_of_pawns.takeRandomPawn())
         
         self.__board.showBoard(self.__player_pawns.letters)
@@ -254,39 +236,59 @@ class Gameplay():
         print("Las fichas de que dispones no son suficientes")
         self.showGameOption()
 
-    def legend(self) -> None:
-        vertex = Vertex()
-        colors = ["#FFCCCC", "#B2FFCD", "#CCCEFF", "#CCF9FF"]
-        texts = ["x3\nPalabra", "x2\nPalabra", "x3\nLetra", "x2\nLetra"]
-
-        # create the plt figurte that will save to board
-        figure = plt.figure(figsize= (10, 2))
-        ax = figure.add_subplot(111)
-        
-        # define the limits of the axes
-        ax.set_xlim(-1, 16)
-        ax.set_ylim(-1, 2)
-        
-        # scale so that grill occupies the entire figure
-        ax.set_position((0, 0, 1, 1))    
-        ax.set_axis_off()
-        
-        for i in range(4):
-            polygon = Polygon(vertex.generateVertex(1.5 + 4 * i, 0.5), color= colors[i])
-            ax.add_artist(polygon)
-            
-            ax.text(
-                vertex.transformationX(3.5 + 4 * i), vertex.transformationY(0.5), texts[i],
-                verticalalignment = "center", horizontalalignment = "center",fontsize = 25, 
-                fontfamily = "fantasy", fontweight = "bold", transform = ax.transAxes
-            )
-
-        plt.show()
-
-    def endGame(self):
+    def endGame(self) -> None:
         """
         Finish current game
         """
         
         print("Fin del juego")
         self.__end = True
+
+    @staticmethod
+    def welcome() -> None:
+        """
+        Display welcome message
+        """
+
+        filePath = Path(__file__).parent / "DataSets/welcome_message.txt"
+        with open(filePath) as file:
+            print(file.read())
+
+    @staticmethod
+    def instructions() -> None:
+        """
+        Display the game instructions
+        """
+
+        filePath = Path(__file__).parent / "DataSets/instructions.txt"
+        with open(filePath) as file:
+            print(file.read())
+
+    @staticmethod
+    def legend() -> None:
+        colors = ["#FFCCCC", "#B2FFCD", "#CCCEFF", "#CCF9FF"]
+        texts = ["x3\nPalabra", "x2\nPalabra", "x3\nLetra", "x2\nLetra"]
+
+        # create the plt figure that will save to board
+        figure = plt.figure(figsize=(10, 2))
+        ax = figure.add_subplot(111)
+
+        # define the limits of the axes
+        ax.set_xlim(-1, 16)
+        ax.set_ylim(-1, 2)
+
+        # scale so that grill occupies the entire figure
+        ax.set_position((0, 0, 1, 1))
+        ax.set_axis_off()
+
+        for i in range(4):
+            polygon = Polygon(Vertex.generateVertex(1.5 + 4 * i, 0.5), color=colors[i])
+            ax.add_artist(polygon)
+
+            ax.text(
+                Vertex.transformationX(3.5 + 4 * i), Vertex.transformationY(0.5), texts[i],
+                verticalalignment="center", horizontalalignment="center", fontsize=25,
+                fontfamily="fantasy", fontweight="bold", transform=ax.transAxes
+            )
+
+        plt.show()

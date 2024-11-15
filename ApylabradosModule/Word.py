@@ -1,6 +1,6 @@
 from ApylabradosModule import FrequencyTable
 
-class Word():
+class Word:
     def __init__(self):
         self.__word = []
     
@@ -78,7 +78,7 @@ class Word():
         Read the word in file line
         
         Args:
-            file (io.TextIOWrapper): file for read
+            file (TextIo): file for read
         
         returns:
             Word: Word Object
